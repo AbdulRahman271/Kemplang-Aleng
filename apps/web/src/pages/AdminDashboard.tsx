@@ -16,7 +16,6 @@ import {
   updateSettings,
   getContactMessages,
   updateContactMessageStatus,
-  uploadProductImage,
   getAdminReviews,
   createReview,
   updateReview,
@@ -66,7 +65,6 @@ export const AdminDashboard: React.FC = () => {
     badge: '',
     altText: ''
   });
-  const [isUploadingImage, setIsUploadingImage] = useState(false);
 
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
@@ -233,28 +231,6 @@ export const AdminDashboard: React.FC = () => {
       showNotification(err.message || 'Gagal menyimpan produk.', true);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleImageFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    if (!file.type.startsWith('image/')) {
-      showNotification('Berkas harus berupa gambar.', true);
-      return;
-    }
-
-    try {
-      setIsUploadingImage(true);
-      const res = await uploadProductImage(file);
-      setProductForm((prev) => ({ ...prev, image: res.imageUrl }));
-      showNotification('Gambar berhasil diunggah.');
-    } catch (err: any) {
-      console.error(err);
-      showNotification(err.message || 'Gagal mengunggah gambar.', true);
-    } finally {
-      setIsUploadingImage(false);
     }
   };
 
@@ -1340,74 +1316,30 @@ export const AdminDashboard: React.FC = () => {
                 </div>
               </div>
 
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold text-on-surface dark:text-outline-variant">Foto Produk *</label>
-                <div className="relative">
-                  <input
-                    type="file"
-                    id="prodImgFile"
-                    accept="image/*"
-                    onChange={handleImageFileChange}
-                    className="hidden"
-                    disabled={isUploadingImage}
-                  />
-
-                  <label
-                    htmlFor="prodImgFile"
-                    className={`group relative flex flex-col items-center justify-center w-full min-h-[160px] border-2 border-dashed rounded-2xl cursor-pointer transition-all duration-300 ${
-                      productForm.image
-                        ? 'border-outline-variant/30 hover:border-primary/50'
-                        : 'border-outline-variant dark:border-outline/50 hover:border-primary hover:bg-primary/5 dark:hover:bg-primary-container/5'
-                    }`}
-                  >
-                    {isUploadingImage && (
-                      <div className="absolute inset-0 flex flex-col items-center justify-center bg-surface-container-low/70 dark:bg-inverse-surface/80 rounded-2xl z-10 backdrop-blur-sm">
-                        <svg className="animate-spin h-8 w-8 text-primary" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                        </svg>
-                        <span className="text-xs font-bold text-primary mt-2">Mengunggah foto...</span>
-                      </div>
-                    )}
-
-                    {productForm.image ? (
-                      <div className="relative w-full h-[180px] rounded-2xl overflow-hidden">
-                        <img
-                          src={productForm.image}
-                          alt="Pratinjau Produk"
-                          className="w-full h-full object-cover"
-                        />
-                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-300">
-                          <div className="bg-white/90 dark:bg-inverse-surface/90 text-on-surface dark:text-on-primary-container px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md">
-                            <span className="material-symbols-outlined text-sm">photo_camera</span>
-                            Ganti Foto
-                          </div>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="flex flex-col items-center justify-center p-6 text-center space-y-2">
-                        <div className="w-12 h-12 rounded-full bg-primary/10 dark:bg-primary-container/20 text-primary dark:text-secondary-container flex items-center justify-center group-hover:scale-110 transition-transform">
-                          <span className="material-symbols-outlined text-2xl">upload_file</span>
-                        </div>
-                        <div>
-                          <p className="text-sm font-bold text-on-surface dark:text-on-primary-container">
-                            Pilih Foto dari Galeri
-                          </p>
-                          <p className="text-xs text-on-surface-variant dark:text-outline-variant mt-1">
-                            Mendukung PNG, JPG, WebP (Maks. 5MB)
-                          </p>
-                        </div>
-                      </div>
-                    )}
-                  </label>
-                </div>
+              <div className="space-y-2">
+                <label htmlFor="prodImgUrl" className="text-xs font-bold">URL Foto Produk *</label>
                 <input
-                  type="text"
+                  type="url"
+                  id="prodImgUrl"
                   value={productForm.image}
-                  className="w-0 h-0 opacity-0 absolute pointer-events-none"
+                  onChange={(e) => setProductForm({ ...productForm, image: e.target.value })}
+                  className="w-full px-3.5 py-2.5 text-sm bg-surface-container-lowest dark:bg-surface-dim border border-outline-variant rounded-xl outline-none focus:border-primary"
+                  placeholder="https://example.com/gambar-kemplang.jpg"
                   required
-                  readOnly
                 />
+                
+                {productForm.image && (
+                  <div className="mt-2 relative w-full h-[180px] rounded-2xl overflow-hidden border border-outline-variant/30">
+                    <img
+                      src={productForm.image}
+                      alt="Pratinjau Produk"
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = 'https://placehold.co/600x400?text=Gambar+Tidak+Valid';
+                      }}
+                    />
+                  </div>
+                )}
               </div>
 
               <div className="space-y-1">

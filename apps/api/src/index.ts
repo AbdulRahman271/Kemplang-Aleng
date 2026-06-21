@@ -287,8 +287,11 @@ async function seedDatabase() {
 }
 
 // Start server
-app.listen(PORT, async () => {
-  console.log(`[Server] Kemplang Aleng API listening on port ${PORT}`);
-  await seedDatabase();
-});
-
+if (process.env.NODE_ENV !== "production") {
+  app.listen(PORT, async () => {
+    console.log(`[Server] Kemplang Aleng API listening on port ${PORT}`);
+    await seedDatabase();
+  });
+}
+// Export app agar dibaca oleh handler Serverless Vercel
+export default app;
