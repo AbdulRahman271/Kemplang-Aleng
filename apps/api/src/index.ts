@@ -6,7 +6,6 @@ import fs from "fs";
 
 dotenv.config();
 
-import { toNodeHandler } from "better-auth/node";
 import { productRouter } from "./routers/product.router";
 import { orderRouter } from "./routers/order.router";
 import { contactRouter } from "./routers/contact.router";
@@ -56,7 +55,14 @@ app.get("/health", (req, res) => {
 });
 
 // Mount Feature Routers
-app.all("/api/auth/*", toNodeHandler(auth));
+app.all("/api/auth/*", async (req, res, next) => {
+  try {
+    const { toNodeHandler } = await import("better-auth/node");
+    return toNodeHandler(auth)(req, res);
+  } catch (err) {
+    next(err);
+  }
+});
 app.use("/api/products", productRouter);
 app.use("/api/categories", categoryRouter);
 app.use("/api/settings", settingRouter);
