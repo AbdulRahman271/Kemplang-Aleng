@@ -15,22 +15,7 @@ export const Home: React.FC = () => {
   // Cart state initialized from localStorage
   const [cartItems, setCartItems] = useState<CartItem[]>(() => {
     const saved = localStorage.getItem('kemplang_cart');
-    return saved ? JSON.parse(saved) : [
-      {
-        product: {
-          id: 'prod-1',
-          name: 'Kemplang Panggang Super',
-          description: 'Kemplang panggang premium dengan aroma bakar khas arang tradisional dan rasa ikan belida yang gurih melimpah.',
-          price: 45000,
-          weight: 250,
-          category: 'roasted',
-          image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBEfn9B5DrPIDJqfxBbbGiDSVRQ7PI5xMVrzn4o4b32OKNTkRlpcxxgwkMK7PCDXe-HKVqoKA3ScwRekehCW69YadaYewA1pQKhGKmWDHXtzbdfgcsklI7-qjJiCu3eMntWN6UYSPbeqAB4Ibt3AD-015G5oByW-rdRQn78RpsqCBVeQK1leerecGbuJYQmC9DU70fcIQoqWSLdkAykPzwOEzsc3jqiRzJdx5KYpq4fPNno0XzxAtMiPKTkQkwK5GyOBIiTP-k_9TxA',
-          badge: 'Terlaris',
-          altText: 'Kemplang Panggang Super'
-        },
-        quantity: 2
-      }
-    ];
+    return saved ? JSON.parse(saved) : [];
   });
 
   const [searchQuery, setSearchQuery] = useState('');

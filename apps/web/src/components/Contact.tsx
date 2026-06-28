@@ -10,12 +10,12 @@ export const Contact: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [error, setError] = useState('');
-  
+
   const [contactInfo, setContactInfo] = useState({
     whatsapp: '+62 812-3456-7890',
     email: 'halo@kemplangaleng.com',
-    address: 'Jalan Demang Lebar Daun No. 12, Lorok Pakjo, Kec. Ilir Barat I, Kota Palembang, Sumatera Selatan 30137',
-    mapsUrl: 'https://maps.google.com/?q=Demang+Lebar+Daun+Palembang'
+    address: 'Jalan Ali Gatmir No.66, 11 Ilir, Kec. Ilir Tim. I, Kota Palembang, Sumatera Selatan 30115',
+    mapsUrl: 'https://www.google.com/maps/place/Kemplang+Aleng/@-2.9815505,104.7672085,17z/data=!3m1!4b1!4m6!3m5!1s0x2e3b7616ad9d745f:0xd02baeccf3643815!8m2!3d-2.9815559!4d104.7697834!16s%2Fg%2F11bzs0728p?authuser=0&entry=ttu&g_ep=EgoyMDI2MDYyNC4wIKXMDSoASAFQAw%3D%3D'
   });
 
   useEffect(() => {
@@ -50,12 +50,12 @@ export const Contact: React.FC = () => {
 
     setIsSubmitting(true);
     setError('');
-    
+
     try {
       await submitContactMessage(formState);
       setIsSubmitted(true);
       setFormState({ name: '', phone: '', message: '' });
-      
+
       // Auto-hide success message after 5 seconds
       setTimeout(() => {
         setIsSubmitted(false);
@@ -81,7 +81,7 @@ export const Contact: React.FC = () => {
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-secondary-fixed/10 dark:bg-secondary-container/5 rounded-full blur-3xl -z-10 pointer-events-none"></div>
 
       <div className="px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto relative z-10">
-        
+
         {/* Header Block */}
         <div className="text-center mb-16">
           <span className="font-label-sm text-label-sm text-primary dark:text-secondary-container tracking-widest uppercase bg-primary-fixed dark:bg-primary-container/30 px-4 py-1.5 rounded-full">
@@ -97,10 +97,10 @@ export const Contact: React.FC = () => {
 
         {/* Layout Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          
+
           {/* Left Column: Contact Cards */}
           <div className="lg:col-span-5 space-y-6">
-            
+
             {/* WhatsApp Card */}
             <div className="flex gap-5 p-6 bg-surface-container-lowest dark:bg-inverse-surface border border-outline-variant/30 dark:border-outline/10 rounded-3xl hover:shadow-md transition-shadow duration-300">
               <div className="w-12 h-12 rounded-2xl bg-secondary-fixed dark:bg-secondary-container/20 text-secondary dark:text-secondary-container flex items-center justify-center shrink-0">
@@ -192,7 +192,7 @@ export const Contact: React.FC = () => {
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-6">
-                
+
                 {error && (
                   <div className="p-4 bg-error-container text-on-error-container rounded-2xl flex items-center gap-3 text-label-md">
                     <span className="material-symbols-outlined">error</span>
