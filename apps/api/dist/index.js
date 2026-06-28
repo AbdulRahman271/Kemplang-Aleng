@@ -5,8 +5,13 @@ var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
-var __esm = (fn, res) => function __init() {
-  return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;
+var __esm = (fn, res, err) => function __init() {
+  if (err) throw err[0];
+  try {
+    return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;
+  } catch (e) {
+    throw err = [e], e;
+  }
 };
 var __export = (target, all) => {
   for (var name in all)
@@ -734,7 +739,7 @@ var init_error = __esm({
         this.name = "BetterCallError";
       }
     };
-    kAPIErrorHeaderSymbol = Symbol.for("better-call:api-error-headers");
+    kAPIErrorHeaderSymbol = /* @__PURE__ */ Symbol.for("better-call:api-error-headers");
     APIError = makeErrorForHideStackFrame(InternalAPIError, Error);
   }
 });
@@ -1167,7 +1172,7 @@ var init_hmac = __esm({
       }
     };
     hmac = /* @__PURE__ */ (() => {
-      const hmac_ = (hash, key, message2) => new _HMAC(hash, key).update(message2).digest();
+      const hmac_ = ((hash, key, message2) => new _HMAC(hash, key).update(message2).digest());
       hmac_.create = (hash, key) => new _HMAC(hash, key);
       return hmac_;
     })();
@@ -2158,7 +2163,7 @@ var unprotected;
 var init_helpers = __esm({
   "../../node_modules/jose/dist/webapi/lib/helpers.js"() {
     init_base64url();
-    unprotected = Symbol();
+    unprotected = /* @__PURE__ */ Symbol();
   }
 });
 
@@ -4633,8 +4638,8 @@ var init_remote = __esm({
       const VERSION = "v6.2.3";
       USER_AGENT = `${NAME}/${VERSION}`;
     }
-    customFetch = Symbol();
-    jwksCache = Symbol();
+    customFetch = /* @__PURE__ */ Symbol();
+    jwksCache = /* @__PURE__ */ Symbol();
     RemoteJWKSet = class {
       #url;
       #timeoutDuration;
@@ -5336,7 +5341,7 @@ function managedNonce(fn, randomBytes_ = randomBytes2) {
       ciphertext.fill(0);
     return out;
   };
-  const res = (key, ...args) => ({
+  const res = ((key, ...args) => ({
     encrypt(plaintext) {
       abytes2(plaintext);
       const nonce = randomBytes_(nonceLength);
@@ -5351,7 +5356,7 @@ function managedNonce(fn, randomBytes_ = randomBytes2) {
       const decrypted = ciphertext.subarray(nonceLength);
       return fn(key, nonce, ...args).decrypt(decrypted);
     }
-  });
+  }));
   if ("blockSize" in fn)
     res.blockSize = fn.blockSize;
   if ("tagLength" in fn)
@@ -6446,10 +6451,9 @@ function config2(newConfig) {
     Object.assign(globalConfig, newConfig);
   return globalConfig;
 }
-var _a, $brand, $ZodAsyncError, $ZodEncodeError, globalConfig;
+var _a, $ZodAsyncError, $ZodEncodeError, globalConfig;
 var init_core = __esm({
   "../../node_modules/zod/v4/core/core.js"() {
-    $brand = Symbol("zod_brand");
     $ZodAsyncError = class extends Error {
       constructor() {
         super(`Encountered Promise during synchronous parse. Use .parseAsync() instead.`);
@@ -9405,11 +9409,9 @@ var init_locales = __esm({
 function registry() {
   return new $ZodRegistry();
 }
-var _a2, $output, $input, $ZodRegistry, globalRegistry;
+var _a2, $ZodRegistry, globalRegistry;
 var init_registries = __esm({
   "../../node_modules/zod/v4/core/registries.js"() {
-    $output = Symbol("ZodOutput");
-    $input = Symbol("ZodInput");
     $ZodRegistry = class {
       constructor() {
         this._map = /* @__PURE__ */ new WeakMap();
@@ -13857,7 +13859,7 @@ function getBetterAuthVersion() {
 var symbol, bind, __context, __betterAuthVersion;
 var init_global = __esm({
   "../../node_modules/@better-auth/core/dist/context/global.mjs"() {
-    symbol = Symbol.for("better-auth:global");
+    symbol = /* @__PURE__ */ Symbol.for("better-auth:global");
     bind = null;
     __context = {};
     __betterAuthVersion = "1.6.20";
@@ -24229,7 +24231,7 @@ function getEndpoints(ctx, options) {
     };
   }, {}) ?? {};
   const middlewares = options.plugins?.map((plugin) => plugin.middlewares?.map((m) => {
-    const middleware = async (context) => {
+    const middleware = (async (context) => {
       const authContext = await ctx;
       return withSpan(`middleware ${m.path} ${plugin.id}`, {
         [ATTR_HOOK_TYPE]: "middleware",
@@ -24242,7 +24244,7 @@ function getEndpoints(ctx, options) {
           ...context.context
         }
       }));
-    };
+    });
     middleware.options = m.middleware.options;
     return {
       path: m.path,
@@ -40302,7 +40304,7 @@ var init_kysely = __esm({
     init_expression_parser();
     init_with_schema_plugin();
     init_provide_controlled_connection();
-    Symbol.asyncDispose ??= Symbol("Symbol.asyncDispose");
+    Symbol.asyncDispose ??= /* @__PURE__ */ Symbol("Symbol.asyncDispose");
     Kysely = class _Kysely extends QueryCreator {
       #props;
       constructor(args) {
@@ -43327,7 +43329,7 @@ var init_mysql_driver = __esm({
     init_object_utils();
     init_query_id();
     init_stack_trace_utils();
-    PRIVATE_RELEASE_METHOD = Symbol();
+    PRIVATE_RELEASE_METHOD = /* @__PURE__ */ Symbol();
     MysqlDriver = class {
       #config;
       #connections = /* @__PURE__ */ new WeakMap();
@@ -43748,7 +43750,7 @@ var init_postgres_driver = __esm({
     init_object_utils();
     init_query_id();
     init_stack_trace_utils();
-    PRIVATE_RELEASE_METHOD2 = Symbol();
+    PRIVATE_RELEASE_METHOD2 = /* @__PURE__ */ Symbol();
     PostgresDriver = class {
       #config;
       #connections = /* @__PURE__ */ new WeakMap();
@@ -44089,9 +44091,9 @@ var init_mssql_driver = __esm({
     init_stack_trace_utils();
     init_random_string();
     init_deferred();
-    PRIVATE_RESET_METHOD = Symbol();
-    PRIVATE_DESTROY_METHOD = Symbol();
-    PRIVATE_VALIDATE_METHOD = Symbol();
+    PRIVATE_RESET_METHOD = /* @__PURE__ */ Symbol();
+    PRIVATE_DESTROY_METHOD = /* @__PURE__ */ Symbol();
+    PRIVATE_VALIDATE_METHOD = /* @__PURE__ */ Symbol();
     MssqlDriver = class {
       #config;
       #pool;
@@ -44635,9 +44637,9 @@ var init_pglite_driver = __esm({
   "../../node_modules/kysely/dist/dialect/pglite/pglite-driver.js"() {
     init_deferred();
     init_stack_trace_utils();
-    PRIVATE_BEGIN_TRANSACTION_METHOD = Symbol();
-    PRIVATE_COMMIT_TRANSACTION_METHOD = Symbol();
-    PRIVATE_ROLLBACK_TRANSACTION_METHOD = Symbol();
+    PRIVATE_BEGIN_TRANSACTION_METHOD = /* @__PURE__ */ Symbol();
+    PRIVATE_COMMIT_TRANSACTION_METHOD = /* @__PURE__ */ Symbol();
+    PRIVATE_ROLLBACK_TRANSACTION_METHOD = /* @__PURE__ */ Symbol();
     PGliteConnection = class {
       #pglite;
       #commitTransaction;
@@ -47872,11 +47874,11 @@ var init_auth = __esm({
 });
 
 // src/index.ts
-var src_exports = {};
-__export(src_exports, {
-  default: () => src_default
+var index_exports = {};
+__export(index_exports, {
+  default: () => index_default
 });
-module.exports = __toCommonJS(src_exports);
+module.exports = __toCommonJS(index_exports);
 var import_express7 = __toESM(require("express"));
 var import_cors = __toESM(require("cors"));
 var import_dotenv3 = __toESM(require("dotenv"));
@@ -48340,9 +48342,10 @@ var import_multer = __toESM(require("multer"));
 var import_path = __toESM(require("path"));
 var import_fs = __toESM(require("fs"));
 var productRouter = (0, import_express.Router)();
+var isVercel = process.env.VERCEL === "1";
 var storage = import_multer.default.diskStorage({
   destination: (req, file, cb) => {
-    const uploadsDir2 = import_path.default.join(__dirname, "../../uploads");
+    const uploadsDir2 = isVercel ? "/tmp/uploads" : import_path.default.join(__dirname, "../../uploads");
     if (!import_fs.default.existsSync(uploadsDir2)) {
       import_fs.default.mkdirSync(uploadsDir2, { recursive: true });
     }
@@ -49135,9 +49138,14 @@ app.use(
 );
 app.use(import_express7.default.json());
 app.use(import_express7.default.urlencoded({ extended: true }));
-var uploadsDir = import_path2.default.join(__dirname, "../uploads");
-if (!import_fs2.default.existsSync(uploadsDir)) {
-  import_fs2.default.mkdirSync(uploadsDir, { recursive: true });
+var isVercel2 = process.env.VERCEL === "1";
+var uploadsDir = isVercel2 ? "/tmp/uploads" : import_path2.default.join(__dirname, "../uploads");
+try {
+  if (!import_fs2.default.existsSync(uploadsDir)) {
+    import_fs2.default.mkdirSync(uploadsDir, { recursive: true });
+  }
+} catch (err) {
+  console.warn("Warning: Could not create uploads directory:", err);
 }
 app.use("/api/uploads", import_express7.default.static(uploadsDir));
 app.use((req, res, next) => {
@@ -49360,7 +49368,7 @@ if (process.env.NODE_ENV !== "production") {
     await seedDatabase();
   });
 }
-var src_default = app;
+var index_default = app;
 /*! Bundled license information:
 
 @noble/ciphers/utils.js:

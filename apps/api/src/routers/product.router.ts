@@ -8,9 +8,10 @@ import fs from "fs";
 export const productRouter = Router();
 
 // Configure storage for product images
+const isVercel = process.env.VERCEL === "1";
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const uploadsDir = path.join(__dirname, "../../uploads");
+    const uploadsDir = isVercel ? "/tmp/uploads" : path.join(__dirname, "../../uploads");
     if (!fs.existsSync(uploadsDir)) {
       fs.mkdirSync(uploadsDir, { recursive: true });
     }
