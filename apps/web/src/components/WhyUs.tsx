@@ -41,7 +41,7 @@ const defaultFeatures = [
     description: 'Tekstur yang pas dan rasa ikan yang kuat, cocok untuk teman makan atau camilan.'
   },
   {
-    icon: 'food-halal',
+    icon: '',
     iconBg: 'bg-primary-fixed-dim dark:bg-primary-fixed-dim/20',
     iconColor: 'text-on-primary-fixed-variant dark:text-primary-fixed-dim',
     title: 'Halal',
