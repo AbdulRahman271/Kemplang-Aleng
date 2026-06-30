@@ -55,11 +55,24 @@ export async function getSession() {
 
 export async function uploadProductImage(file: File): Promise<{ imageUrl: string }> {
   const formData = new FormData();
-  formData.append('image', file);
-  return apiFetch<{ imageUrl: string }>('/api/products/upload', {
-    method: 'POST',
-    body: formData,
-  });
+  formData.append('file', file);
+  formData.append('upload_preset', 'kemplang_unsigned');
+
+  const response = await fetch(
+    'https://api.cloudinary.com/v1_1/dekleqgy2/image/upload',
+    {
+      method: 'POST',
+      body: formData,
+    }
+  );
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData?.error?.message || 'Gagal upload gambar ke Cloudinary');
+  }
+
+  const data = await response.json();
+  return { imageUrl: data.secure_url };
 }
 
 // --- Products API ---
