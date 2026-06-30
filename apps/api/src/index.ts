@@ -286,3 +286,10 @@ if (process.env.NODE_ENV !== "production") {
 }
 // Export app agar dibaca oleh handler Serverless Vercel
 export default app;
+
+// Disable Vercel's built-in body parser so multer can handle multipart file uploads
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};

@@ -8,6 +8,11 @@
     ],
     "routes": [
         {
+            "src": "/api/products/upload",
+            "dest": "dist/index.js",
+            "methods": ["POST"]
+        },
+        {
             "src": "/(.*)",
             "dest": "dist/index.js"
         }

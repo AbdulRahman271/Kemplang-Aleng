@@ -870,8 +870,8 @@ function getHost(url) {
     return null;
   }
 }
-function isDynamicBaseURLConfig(config3) {
-  return typeof config3 === "object" && config3 !== null && "allowedHosts" in config3 && Array.isArray(config3.allowedHosts);
+function isDynamicBaseURLConfig(config4) {
+  return typeof config4 === "object" && config4 !== null && "allowedHosts" in config4 && Array.isArray(config4.allowedHosts);
 }
 function isRequestLike(value) {
   if (value instanceof Request) return true;
@@ -910,24 +910,24 @@ function getProtocolFromSource(source, configProtocol, trustedProxyHeaders) {
   if (host && isLoopbackForDevScheme(host)) return "http";
   return "https";
 }
-function resolveDynamicBaseURL(config3, source, basePath, trustedProxyHeaders) {
+function resolveDynamicBaseURL(config4, source, basePath, trustedProxyHeaders) {
   const host = getHostFromSource(source, trustedProxyHeaders);
   if (!host) {
-    if (config3.fallback) return withPath(config3.fallback, basePath);
+    if (config4.fallback) return withPath(config4.fallback, basePath);
     throw new BetterAuthError("Could not determine host from request headers. Please provide a fallback URL in your baseURL config.");
   }
-  if (config3.allowedHosts.some((pattern) => matchesHostPattern(host, pattern))) return withPath(`${getProtocolFromSource(source, config3.protocol, trustedProxyHeaders)}://${host}`, basePath);
-  if (config3.fallback) return withPath(config3.fallback, basePath);
-  throw new BetterAuthError(`Host "${host}" is not in the allowed hosts list. Allowed hosts: ${config3.allowedHosts.join(", ")}. Add this host to your allowedHosts config or provide a fallback URL.`);
+  if (config4.allowedHosts.some((pattern) => matchesHostPattern(host, pattern))) return withPath(`${getProtocolFromSource(source, config4.protocol, trustedProxyHeaders)}://${host}`, basePath);
+  if (config4.fallback) return withPath(config4.fallback, basePath);
+  throw new BetterAuthError(`Host "${host}" is not in the allowed hosts list. Allowed hosts: ${config4.allowedHosts.join(", ")}. Add this host to your allowedHosts config or provide a fallback URL.`);
 }
-function resolveBaseURL(config3, basePath, source, loadEnv, trustedProxyHeaders) {
-  if (isDynamicBaseURLConfig(config3)) {
-    if (source) return resolveDynamicBaseURL(config3, source, basePath, trustedProxyHeaders);
-    if (config3.fallback) return withPath(config3.fallback, basePath);
+function resolveBaseURL(config4, basePath, source, loadEnv, trustedProxyHeaders) {
+  if (isDynamicBaseURLConfig(config4)) {
+    if (source) return resolveDynamicBaseURL(config4, source, basePath, trustedProxyHeaders);
+    if (config4.fallback) return withPath(config4.fallback, basePath);
     return getBaseURL(void 0, basePath, void 0, loadEnv, trustedProxyHeaders);
   }
   const request = isRequestLike(source) ? source : void 0;
-  if (typeof config3 === "string") return getBaseURL(config3, basePath, request, loadEnv, trustedProxyHeaders);
+  if (typeof config4 === "string") return getBaseURL(config4, basePath, request, loadEnv, trustedProxyHeaders);
   return getBaseURL(void 0, basePath, request, loadEnv, trustedProxyHeaders);
 }
 var SLASH_CHAR_CODE, matchesHostPattern;
@@ -6978,8 +6978,8 @@ function prefixIssues(path2, issues) {
 function unwrapMessage(message2) {
   return typeof message2 === "string" ? message2 : message2?.message;
 }
-function finalizeIssue(iss, ctx, config3) {
-  const message2 = iss.message ? iss.message : unwrapMessage(iss.inst?._zod.def?.error?.(iss)) ?? unwrapMessage(ctx?.error?.(iss)) ?? unwrapMessage(config3.customError?.(iss)) ?? unwrapMessage(config3.localeError?.(iss)) ?? "Invalid input";
+function finalizeIssue(iss, ctx, config4) {
+  const message2 = iss.message ? iss.message : unwrapMessage(iss.inst?._zod.def?.error?.(iss)) ?? unwrapMessage(ctx?.error?.(iss)) ?? unwrapMessage(config4.customError?.(iss)) ?? unwrapMessage(config4.localeError?.(iss)) ?? "Invalid input";
   const { inst: _inst, continue: _continue, input: _input, ...rest } = iss;
   rest.path ?? (rest.path = []);
   rest.message = message2;
@@ -12822,7 +12822,7 @@ function getResponse(responses) {
     ...responses
   };
 }
-async function generator(endpoints, config3) {
+async function generator(endpoints, config4) {
   const components = { schemas: {} };
   Object.entries(endpoints).forEach(([_, value]) => {
     const options = value.options;
@@ -12860,7 +12860,7 @@ async function generator(endpoints, config3) {
     },
     components,
     security: [{ apiKeyCookie: [] }],
-    servers: [{ url: config3?.url }],
+    servers: [{ url: config4?.url }],
     tags: [{
       name: "Default",
       description: "Default endpoints that are included with Better Auth by default. These endpoints are not part of any plugin."
@@ -12873,7 +12873,7 @@ var init_openapi = __esm({
   "../../node_modules/better-call/dist/openapi.mjs"() {
     init_zod();
     paths = {};
-    getHTML = (apiReference, config3) => `<!doctype html>
+    getHTML = (apiReference, config4) => `<!doctype html>
 <html>
   <head>
     <title>Scalar API Reference</title>
@@ -12890,11 +12890,11 @@ var init_openapi = __esm({
     </script>
 	 <script>
       var configuration = {
-	  	favicon: ${config3?.logo ? `data:image/svg+xml;utf8,${encodeURIComponent(config3.logo)}` : void 0} ,
-	   	theme: ${config3?.theme || "saturn"},
+	  	favicon: ${config4?.logo ? `data:image/svg+xml;utf8,${encodeURIComponent(config4.logo)}` : void 0} ,
+	   	theme: ${config4?.theme || "saturn"},
         metaData: {
-			title: ${config3?.title || "Open API Reference"},
-			description: ${config3?.description || "Better Call Open API"},
+			title: ${config4?.title || "Open API Reference"},
+			description: ${config4?.description || "Better Call Open API"},
 		}
       }
       document.getElementById('api-reference').dataset.configuration =
@@ -13113,11 +13113,11 @@ var init_router = __esm({
     init_endpoint();
     init_openapi();
     init_dist2();
-    createRouter$1 = (endpoints, config3) => {
-      if (!config3?.openapi?.disabled) {
+    createRouter$1 = (endpoints, config4) => {
+      if (!config4?.openapi?.disabled) {
         const openapi = {
           path: "/api/reference",
-          ...config3?.openapi
+          ...config4?.openapi
         };
         endpoints["openapi"] = createEndpoint(openapi.path, { method: "GET" }, async (c) => {
           const schema2 = await generator(endpoints);
@@ -13132,12 +13132,12 @@ var init_router = __esm({
         const methods2 = Array.isArray(endpoint.options?.method) ? endpoint.options.method : [endpoint.options?.method];
         for (const method of methods2) addRoute(router2, method, endpoint.path, endpoint);
       }
-      if (config3?.routerMiddleware?.length) for (const { path: path2, middleware } of config3.routerMiddleware) addRoute(middlewareRouter, "*", path2, middleware);
+      if (config4?.routerMiddleware?.length) for (const { path: path2, middleware } of config4.routerMiddleware) addRoute(middlewareRouter, "*", path2, middleware);
       const processRequest = async (request) => {
         const url = new URL(request.url);
         const pathname = url.pathname;
-        const path2 = config3?.basePath && config3.basePath !== "/" ? pathname.split(config3.basePath).reduce((acc, curr, index) => {
-          if (index !== 0) if (index > 1) acc.push(`${config3.basePath}${curr}`);
+        const path2 = config4?.basePath && config4.basePath !== "/" ? pathname.split(config4.basePath).reduce((acc, curr, index) => {
+          if (index !== 0) if (index > 1) acc.push(`${config4.basePath}${curr}`);
           else acc.push(curr);
           return acc;
         }, []).join("") : url.pathname;
@@ -13150,7 +13150,7 @@ var init_router = __esm({
           statusText: "Not Found"
         });
         const route = findRoute(router2, request.method, path2);
-        if (path2.endsWith("/") !== route?.data?.path?.endsWith("/") && !config3?.skipTrailingSlashes) return new Response(null, {
+        if (path2.endsWith("/") !== route?.data?.path?.endsWith("/") && !config4?.skipTrailingSlashes) return new Response(null, {
           status: 404,
           statusText: "Not Found"
         });
@@ -13166,7 +13166,7 @@ var init_router = __esm({
         });
         const handler = route.data;
         try {
-          const allowedMediaTypes = handler.options.metadata?.allowedMediaTypes || config3?.allowedMediaTypes;
+          const allowedMediaTypes = handler.options.metadata?.allowedMediaTypes || config4?.allowedMediaTypes;
           const context = {
             path: path2,
             method: request.method,
@@ -13177,7 +13177,7 @@ var init_router = __esm({
             query,
             _flag: "router",
             asResponse: true,
-            context: config3?.routerContext
+            context: config4?.routerContext
           };
           const middlewareRoutes = findAllRoutes(middlewareRouter, "*", path2);
           if (middlewareRoutes?.length) for (const { data: middleware, params } of middlewareRoutes) {
@@ -13190,14 +13190,14 @@ var init_router = __esm({
           }
           return await handler(context);
         } catch (error3) {
-          if (config3?.onError) try {
-            const errorResponse = await config3.onError(error3, request);
+          if (config4?.onError) try {
+            const errorResponse = await config4.onError(error3, request);
             if (errorResponse instanceof Response) return toResponse(errorResponse);
           } catch (error4) {
             if (isAPIError(error4)) return toResponse(error4);
             throw error4;
           }
-          if (config3?.throwError) throw error3;
+          if (config4?.throwError) throw error3;
           if (isAPIError(error3)) return toResponse(error3);
           console.error(`# SERVER_ERROR: `, error3);
           return new Response(null, {
@@ -13208,11 +13208,11 @@ var init_router = __esm({
       };
       return {
         handler: async (request) => {
-          const onReq = await config3?.onRequest?.(request);
+          const onReq = await config4?.onRequest?.(request);
           if (onReq instanceof Response) return onReq;
           const req = isRequest(onReq) ? onReq : request;
           const res = await processRequest(req);
-          const onRes = await config3?.onResponse?.(res, req);
+          const onRes = await config4?.onResponse?.(res, req);
           if (onRes instanceof Response) return onRes;
           return res;
         },
@@ -14807,9 +14807,9 @@ async function resolveRateLimitConfig(req, ctx) {
 }
 async function onRequestRateLimit(req, ctx) {
   if (!ctx.rateLimit.enabled) return;
-  const config3 = await resolveRateLimitConfig(req, ctx);
-  if (!config3) return;
-  const { key, currentWindow, currentMax } = config3;
+  const config4 = await resolveRateLimitConfig(req, ctx);
+  if (!config4) return;
+  const { key, currentWindow, currentMax } = config4;
   const storage = getRateLimitStorage(ctx, { window: currentWindow });
   const rule = {
     window: currentWindow,
@@ -15119,7 +15119,7 @@ var init_session = __esm({
       }
     });
     isStateful = (ctx) => hasServerSessionStore(ctx.context.options);
-    getSessionFromCtx = async (ctx, config3) => {
+    getSessionFromCtx = async (ctx, config4) => {
       if (ctx.context.session) return ctx.context.session;
       const session2 = await getSession()({
         ...ctx,
@@ -15129,10 +15129,10 @@ var init_session = __esm({
         returnHeaders: true,
         returnStatus: false,
         query: {
-          ...config3,
+          ...config4,
           ...ctx.query,
-          disableCookieCache: config3?.disableCookieCache || ctx.query?.disableCookieCache,
-          disableRefresh: config3?.disableRefresh || ctx.query?.disableRefresh
+          disableCookieCache: config4?.disableCookieCache || ctx.query?.disableCookieCache,
+          disableRefresh: config4?.disableRefresh || ctx.query?.disableRefresh
         }
       }).catch(() => {
         return null;
@@ -15323,15 +15323,15 @@ async function processIdentifier(identifier, option) {
   if (typeof option === "object" && "hash" in option) return option.hash(identifier);
   return identifier;
 }
-function getStorageOption(identifier, config3) {
-  if (!config3) return;
-  if (typeof config3 === "object" && "default" in config3) {
-    if (config3.overrides) {
-      for (const [prefix, option] of Object.entries(config3.overrides)) if (identifier.startsWith(prefix)) return option;
+function getStorageOption(identifier, config4) {
+  if (!config4) return;
+  if (typeof config4 === "object" && "default" in config4) {
+    if (config4.overrides) {
+      for (const [prefix, option] of Object.entries(config4.overrides)) if (identifier.startsWith(prefix)) return option;
     }
-    return config3.default;
+    return config4.default;
   }
-  return config3;
+  return config4;
 }
 var defaultKeyHasher;
 var init_verification_token_storage = __esm({
@@ -24124,8 +24124,8 @@ var init_dispatch = __esm({
 async function resolveDynamicContext(rawCtx, input) {
   if (rawCtx.baseURL) return rawCtx;
   const source = pickSource(input);
-  const config3 = rawCtx.options.baseURL;
-  const hasFallback = isDynamicBaseURLConfig(config3) && Boolean(config3.fallback);
+  const config4 = rawCtx.options.baseURL;
+  const hasFallback = isDynamicBaseURLConfig(config4) && Boolean(config4.fallback);
   if (source === void 0 && !hasFallback) throw new APIError2("INTERNAL_SERVER_ERROR", { message: "Dynamic baseURL could not be resolved for this direct auth.api call. Pass `headers: request.headers` (or `request`) to the call, or add `fallback` to your baseURL config." });
   try {
     return await resolveRequestContext(rawCtx, source, resolveDynamicTrustedProxyHeaders(rawCtx.options));
@@ -24650,7 +24650,7 @@ var init_factory = __esm({
     createAsIsTransaction = (adapter) => (fn) => fn(adapter);
     createAdapterFactory = ({ adapter: customAdapter, config: cfg }) => (options) => {
       const uniqueAdapterFactoryInstanceId = Math.random().toString(36).substring(2, 15);
-      const config3 = {
+      const config4 = {
         ...cfg,
         supportsBooleans: cfg.supportsBooleans ?? true,
         supportsDates: cfg.supportsDates ?? true,
@@ -24664,13 +24664,13 @@ var init_factory = __esm({
         disableTransformOutput: cfg.disableTransformOutput ?? false,
         disableTransformJoin: cfg.disableTransformJoin ?? false
       };
-      if (options.advanced?.database?.generateId === "serial" && config3.supportsNumericIds === false) throw new BetterAuthError(`[${config3.adapterName}] Your database or database adapter does not support numeric ids. Please disable "useNumberId" in your config.`);
+      if (options.advanced?.database?.generateId === "serial" && config4.supportsNumericIds === false) throw new BetterAuthError(`[${config4.adapterName}] Your database or database adapter does not support numeric ids. Please disable "useNumberId" in your config.`);
       const schema2 = getAuthTables(options);
       const debugLog = (...args) => {
-        if (config3.debugLogs === true || typeof config3.debugLogs === "object") {
+        if (config4.debugLogs === true || typeof config4.debugLogs === "object") {
           const logger3 = createLogger({ level: "info" });
-          if (typeof config3.debugLogs === "object" && "isRunningAdapterTests" in config3.debugLogs) {
-            if (config3.debugLogs.isRunningAdapterTests) {
+          if (typeof config4.debugLogs === "object" && "isRunningAdapterTests" in config4.debugLogs) {
+            if (config4.debugLogs.isRunningAdapterTests) {
               args.shift();
               debugLogs.push({
                 instance: uniqueAdapterFactoryInstanceId,
@@ -24679,61 +24679,61 @@ var init_factory = __esm({
             }
             return;
           }
-          if (typeof config3.debugLogs === "object" && config3.debugLogs.logCondition && !config3.debugLogs.logCondition?.()) return;
+          if (typeof config4.debugLogs === "object" && config4.debugLogs.logCondition && !config4.debugLogs.logCondition?.()) return;
           if (typeof args[0] === "object" && "method" in args[0]) {
             const method = args.shift().method;
-            if (typeof config3.debugLogs === "object") {
-              if (method === "create" && !config3.debugLogs.create) return;
-              else if (method === "update" && !config3.debugLogs.update) return;
-              else if (method === "updateMany" && !config3.debugLogs.updateMany) return;
-              else if (method === "findOne" && !config3.debugLogs.findOne) return;
-              else if (method === "findMany" && !config3.debugLogs.findMany) return;
-              else if (method === "delete" && !config3.debugLogs.delete) return;
-              else if (method === "deleteMany" && !config3.debugLogs.deleteMany) return;
-              else if (method === "consumeOne" && !config3.debugLogs.consumeOne) return;
-              else if (method === "incrementOne" && !config3.debugLogs.incrementOne) return;
-              else if (method === "count" && !config3.debugLogs.count) return;
+            if (typeof config4.debugLogs === "object") {
+              if (method === "create" && !config4.debugLogs.create) return;
+              else if (method === "update" && !config4.debugLogs.update) return;
+              else if (method === "updateMany" && !config4.debugLogs.updateMany) return;
+              else if (method === "findOne" && !config4.debugLogs.findOne) return;
+              else if (method === "findMany" && !config4.debugLogs.findMany) return;
+              else if (method === "delete" && !config4.debugLogs.delete) return;
+              else if (method === "deleteMany" && !config4.debugLogs.deleteMany) return;
+              else if (method === "consumeOne" && !config4.debugLogs.consumeOne) return;
+              else if (method === "incrementOne" && !config4.debugLogs.incrementOne) return;
+              else if (method === "count" && !config4.debugLogs.count) return;
             }
-            logger3.info(`[${config3.adapterName}]`, ...args);
-          } else logger3.info(`[${config3.adapterName}]`, ...args);
+            logger3.info(`[${config4.adapterName}]`, ...args);
+          } else logger3.info(`[${config4.adapterName}]`, ...args);
         }
       };
       const logger2 = createLogger(options.logger);
       const getDefaultModelName = initGetDefaultModelName({
-        usePlural: config3.usePlural,
+        usePlural: config4.usePlural,
         schema: schema2
       });
       const getDefaultFieldName = initGetDefaultFieldName({
-        usePlural: config3.usePlural,
+        usePlural: config4.usePlural,
         schema: schema2
       });
       const getModelName = initGetModelName({
-        usePlural: config3.usePlural,
+        usePlural: config4.usePlural,
         schema: schema2
       });
       const getFieldName = initGetFieldName({
         schema: schema2,
-        usePlural: config3.usePlural
+        usePlural: config4.usePlural
       });
       const idField = initGetIdField({
         schema: schema2,
         options,
-        usePlural: config3.usePlural,
-        disableIdGeneration: config3.disableIdGeneration,
-        customIdGenerator: config3.customIdGenerator,
-        supportsUUIDs: config3.supportsUUIDs
+        usePlural: config4.usePlural,
+        disableIdGeneration: config4.disableIdGeneration,
+        customIdGenerator: config4.customIdGenerator,
+        supportsUUIDs: config4.supportsUUIDs
       });
       const getFieldAttributes = initGetFieldAttributes({
         schema: schema2,
         options,
-        usePlural: config3.usePlural,
-        disableIdGeneration: config3.disableIdGeneration,
-        customIdGenerator: config3.customIdGenerator
+        usePlural: config4.usePlural,
+        disableIdGeneration: config4.disableIdGeneration,
+        customIdGenerator: config4.customIdGenerator
       });
       const transformInput = async (data, defaultModelName, action, forceAllowId) => {
         const transformedData = {};
         const fields = schema2[defaultModelName].fields;
-        const newMappedKeys = config3.mapKeysTransformInput ?? {};
+        const newMappedKeys = config4.mapKeysTransformInput ?? {};
         const useNumberId = options.advanced?.database?.generateId === "serial";
         fields.id = idField({
           customModelName: defaultModelName,
@@ -24756,11 +24756,11 @@ var init_factory = __esm({
           if (fieldAttributes.transform?.input) newValue = await fieldAttributes.transform.input(newValue);
           if (fieldAttributes.references?.field === "id" && useNumberId) if (Array.isArray(newValue)) newValue = newValue.map((x) => x !== null ? Number(x) : null);
           else newValue = newValue !== null ? Number(newValue) : null;
-          else if (config3.supportsJSON === false && typeof newValue === "object" && fieldAttributes.type === "json") newValue = JSON.stringify(newValue);
-          else if (config3.supportsArrays === false && Array.isArray(newValue) && (fieldAttributes.type === "string[]" || fieldAttributes.type === "number[]")) newValue = JSON.stringify(newValue);
-          else if (config3.supportsDates === false && newValue instanceof Date && fieldAttributes.type === "date") newValue = newValue.toISOString();
-          else if (config3.supportsBooleans === false && typeof newValue === "boolean") newValue = newValue ? 1 : 0;
-          if (config3.customTransformInput) newValue = config3.customTransformInput({
+          else if (config4.supportsJSON === false && typeof newValue === "object" && fieldAttributes.type === "json") newValue = JSON.stringify(newValue);
+          else if (config4.supportsArrays === false && Array.isArray(newValue) && (fieldAttributes.type === "string[]" || fieldAttributes.type === "number[]")) newValue = JSON.stringify(newValue);
+          else if (config4.supportsDates === false && newValue instanceof Date && fieldAttributes.type === "date") newValue = newValue.toISOString();
+          else if (config4.supportsBooleans === false && typeof newValue === "boolean") newValue = newValue ? 1 : 0;
+          if (config4.customTransformInput) newValue = config4.customTransformInput({
             data: newValue,
             action,
             field: newFieldName,
@@ -24776,7 +24776,7 @@ var init_factory = __esm({
       const transformOutput = async (data, unsafe_model, select = [], join) => {
         const transformSingleOutput = async (data2, unsafe_model2, select2 = []) => {
           if (!data2) return null;
-          const newMappedKeys = config3.mapKeysTransformOutput ?? {};
+          const newMappedKeys = config4.mapKeysTransformOutput ?? {};
           const transformedData2 = {};
           const tableSchema = schema2[getDefaultModelName(unsafe_model2)].fields;
           const idKey = Object.entries(newMappedKeys).find(([_, v]) => v === "id")?.[0];
@@ -24791,11 +24791,11 @@ var init_factory = __esm({
               const newFieldName = newMappedKeys[key] || key;
               if (originalKey === "id" || field.references?.field === "id") {
                 if (typeof newValue !== "undefined" && newValue !== null) newValue = String(newValue);
-              } else if (config3.supportsJSON === false && typeof newValue === "string" && field.type === "json") newValue = safeJSONParse(newValue);
-              else if (config3.supportsArrays === false && typeof newValue === "string" && (field.type === "string[]" || field.type === "number[]")) newValue = safeJSONParse(newValue);
-              else if (config3.supportsDates === false && typeof newValue === "string" && field.type === "date") newValue = new Date(newValue);
-              else if (config3.supportsBooleans === false && typeof newValue === "number" && field.type === "boolean") newValue = newValue === 1;
-              if (config3.customTransformOutput) newValue = config3.customTransformOutput({
+              } else if (config4.supportsJSON === false && typeof newValue === "string" && field.type === "json") newValue = safeJSONParse(newValue);
+              else if (config4.supportsArrays === false && typeof newValue === "string" && (field.type === "string[]" || field.type === "number[]")) newValue = safeJSONParse(newValue);
+              else if (config4.supportsDates === false && typeof newValue === "string" && field.type === "date") newValue = new Date(newValue);
+              else if (config4.supportsBooleans === false && typeof newValue === "number" && field.type === "boolean") newValue = newValue === 1;
+              if (config4.customTransformOutput) newValue = config4.customTransformOutput({
                 data: newValue,
                 field: newFieldName,
                 fieldAttributes: field,
@@ -24845,7 +24845,7 @@ var init_factory = __esm({
       };
       const transformWhereClause = ({ model, where, action }) => {
         if (!where) return void 0;
-        const newMappedKeys = config3.mapKeysTransformInput ?? {};
+        const newMappedKeys = config4.mapKeysTransformInput ?? {};
         return where.map((w) => {
           const { field: unsafe_field, value, operator = "eq", connector = "AND", mode = "sensitive" } = w;
           if (operator === "in") {
@@ -24870,7 +24870,7 @@ var init_factory = __esm({
             if (useNumberId) if (Array.isArray(value)) newValue = value.map(Number);
             else newValue = Number(value);
           }
-          if (fieldAttr.type === "date" && value instanceof Date && !config3.supportsDates) newValue = value.toISOString();
+          if (fieldAttr.type === "date" && value instanceof Date && !config4.supportsDates) newValue = value.toISOString();
           if (fieldAttr.type === "boolean" && typeof newValue === "string") newValue = newValue === "true";
           if (fieldAttr.type === "number") {
             if (typeof newValue === "string" && newValue.trim() !== "") {
@@ -24881,13 +24881,13 @@ var init_factory = __esm({
               if (parsed.every((n) => !Number.isNaN(n))) newValue = parsed;
             }
           }
-          if (fieldAttr.type === "boolean" && typeof newValue === "boolean" && !config3.supportsBooleans) newValue = newValue ? 1 : 0;
-          if (fieldAttr.type === "json" && typeof value === "object" && !config3.supportsJSON) try {
+          if (fieldAttr.type === "boolean" && typeof newValue === "boolean" && !config4.supportsBooleans) newValue = newValue ? 1 : 0;
+          if (fieldAttr.type === "json" && typeof value === "object" && !config4.supportsJSON) try {
             newValue = JSON.stringify(value);
           } catch (error3) {
             throw new Error(`Failed to stringify JSON value for field ${fieldName}`, { cause: error3 });
           }
-          if (config3.customTransformInput) newValue = config3.customTransformInput({
+          if (config4.customTransformInput) newValue = config4.customTransformInput({
             data: newValue,
             fieldAttributes: fieldAttr,
             field: fieldName,
@@ -25031,10 +25031,10 @@ var init_factory = __esm({
       let lazyLoadTransaction = null;
       const adapter = {
         transaction: async (cb) => {
-          if (!lazyLoadTransaction) if (!config3.transaction) lazyLoadTransaction = createAsIsTransaction(adapter);
+          if (!lazyLoadTransaction) if (!config4.transaction) lazyLoadTransaction = createAsIsTransaction(adapter);
           else {
-            logger2.debug(`[${config3.adapterName}] - Using provided transaction implementation.`);
-            lazyLoadTransaction = config3.transaction;
+            logger2.debug(`[${config4.adapterName}] - Using provided transaction implementation.`);
+            lazyLoadTransaction = config4.transaction;
           }
           return lazyLoadTransaction(cb);
         },
@@ -25044,7 +25044,7 @@ var init_factory = __esm({
           const model = getModelName(unsafeModel);
           unsafeModel = getDefaultModelName(unsafeModel);
           if ("id" in unsafeData && typeof unsafeData.id !== "undefined" && !forceAllowId) {
-            logger2.warn(`[${config3.adapterName}] - You are trying to create a record with an id. This is not allowed as we handle id generation for you, unless you pass in the \`forceAllowId\` parameter. The id will be ignored.`);
+            logger2.warn(`[${config4.adapterName}] - You are trying to create a record with an id. This is not allowed as we handle id generation for you, unless you pass in the \`forceAllowId\` parameter. The id will be ignored.`);
             const stack = (/* @__PURE__ */ new Error()).stack?.split("\n").filter((_, i) => i !== 1).join("\n").replace("Error:", "Create method with `id` being called at:");
             console.log(stack);
             unsafeData.id = void 0;
@@ -25054,7 +25054,7 @@ var init_factory = __esm({
             data: unsafeData
           });
           let data = unsafeData;
-          if (!config3.disableTransformInput) data = await transformInput(unsafeData, unsafeModel, "create", forceAllowId);
+          if (!config4.disableTransformInput) data = await transformInput(unsafeData, unsafeModel, "create", forceAllowId);
           debugLog({ method: "create" }, `${formatTransactionId(thisTransactionId)} ${formatStep(2, 4)}`, `${formatMethod("create")} ${formatAction("Parsed Input")}:`, {
             model,
             data
@@ -25071,7 +25071,7 @@ var init_factory = __esm({
             res
           });
           let transformed = res;
-          if (!config3.disableTransformOutput) transformed = await transformOutput(res, unsafeModel, select, void 0);
+          if (!config4.disableTransformOutput) transformed = await transformOutput(res, unsafeModel, select, void 0);
           debugLog({ method: "create" }, `${formatTransactionId(thisTransactionId)} ${formatStep(4, 4)}`, `${formatMethod("create")} ${formatAction("Parsed Result")}:`, {
             model,
             data: transformed
@@ -25093,7 +25093,7 @@ var init_factory = __esm({
             data: unsafeData
           });
           let data = unsafeData;
-          if (!config3.disableTransformInput) data = await transformInput(unsafeData, unsafeModel, "update");
+          if (!config4.disableTransformInput) data = await transformInput(unsafeData, unsafeModel, "update");
           debugLog({ method: "update" }, `${formatTransactionId(thisTransactionId)} ${formatStep(2, 4)}`, `${formatMethod("update")} ${formatAction("Parsed Input")}:`, {
             model,
             data
@@ -25111,7 +25111,7 @@ var init_factory = __esm({
             data: res
           });
           let transformed = res;
-          if (!config3.disableTransformOutput) transformed = await transformOutput(res, unsafeModel, void 0, void 0);
+          if (!config4.disableTransformOutput) transformed = await transformOutput(res, unsafeModel, void 0, void 0);
           debugLog({ method: "update" }, `${formatTransactionId(thisTransactionId)} ${formatStep(4, 4)}`, `${formatMethod("update")} ${formatAction("Parsed Result")}:`, {
             model,
             data: transformed
@@ -25133,7 +25133,7 @@ var init_factory = __esm({
             data: unsafeData
           });
           let data = unsafeData;
-          if (!config3.disableTransformInput) data = await transformInput(unsafeData, unsafeModel, "update");
+          if (!config4.disableTransformInput) data = await transformInput(unsafeData, unsafeModel, "update");
           debugLog({ method: "updateMany" }, `${formatTransactionId(thisTransactionId)} ${formatStep(2, 4)}`, `${formatMethod("updateMany")} ${formatAction("Parsed Input")}:`, {
             model,
             data
@@ -25168,7 +25168,7 @@ var init_factory = __esm({
           unsafeModel = getDefaultModelName(unsafeModel);
           let join;
           let passJoinToAdapter = true;
-          if (!config3.disableTransformJoin) {
+          if (!config4.disableTransformJoin) {
             const result = transformJoinClause(unsafeModel, unsafeJoin, select);
             if (result) {
               join = result.join;
@@ -25196,7 +25196,7 @@ var init_factory = __esm({
             data: res
           });
           let transformed = res;
-          if (!config3.disableTransformOutput) transformed = await transformOutput(res, unsafeModel, select, join);
+          if (!config4.disableTransformOutput) transformed = await transformOutput(res, unsafeModel, select, join);
           debugLog({ method: "findOne" }, `${formatTransactionId(thisTransactionId)} ${formatStep(3, 3)}`, `${formatMethod("findOne")} ${formatAction("Parsed Result")}:`, {
             model,
             data: transformed
@@ -25216,7 +25216,7 @@ var init_factory = __esm({
           unsafeModel = getDefaultModelName(unsafeModel);
           let join;
           let passJoinToAdapter = true;
-          if (!config3.disableTransformJoin) {
+          if (!config4.disableTransformJoin) {
             const result = transformJoinClause(unsafeModel, unsafeJoin, select);
             if (result) {
               join = result.join;
@@ -25249,7 +25249,7 @@ var init_factory = __esm({
             data: res
           });
           let transformed = res;
-          if (!config3.disableTransformOutput) transformed = await Promise.all(res.map(async (r) => {
+          if (!config4.disableTransformOutput) transformed = await Promise.all(res.map(async (r) => {
             return await transformOutput(r, unsafeModel, void 0, join);
           }));
           debugLog({ method: "findMany" }, `${formatTransactionId(thisTransactionId)} ${formatStep(3, 3)}`, `${formatMethod("findMany")} ${formatAction("Parsed Result")}:`, {
@@ -25353,7 +25353,7 @@ var init_factory = __esm({
                   mode: "sensitive"
                 }]
               });
-              if (typeof deleted !== "number") throw new BetterAuthError(`Adapter "${config3.adapterId}" returned a non-numeric value from deleteMany during the consumeOne fallback. Return the number of deleted rows, or implement a native consumeOne for atomic single-use consumption.`);
+              if (typeof deleted !== "number") throw new BetterAuthError(`Adapter "${config4.adapterId}" returned a non-numeric value from deleteMany during the consumeOne fallback. Return the number of deleted rows, or implement a native consumeOne for atomic single-use consumption.`);
               return deleted > 0 ? target : null;
             }));
             resultNeedsOutputTransform = false;
@@ -25363,7 +25363,7 @@ var init_factory = __esm({
             data: res
           });
           let transformed = res;
-          if (!config3.disableTransformOutput && resultNeedsOutputTransform && res) transformed = await transformOutput(res, unsafeModel, void 0, void 0);
+          if (!config4.disableTransformOutput && resultNeedsOutputTransform && res) transformed = await transformOutput(res, unsafeModel, void 0, void 0);
           debugLog({ method: "consumeOne" }, `${formatTransactionId(thisTransactionId)} ${formatStep(3, 3)}`, `${formatMethod("consumeOne")} ${formatAction("Parsed Result")}:`, {
             model,
             data: transformed
@@ -25392,14 +25392,14 @@ var init_factory = __esm({
           let res;
           let resultNeedsOutputTransform = true;
           if (adapterInstance.incrementOne) {
-            const mappedKeys = config3.mapKeysTransformInput ?? {};
+            const mappedKeys = config4.mapKeysTransformInput ?? {};
             const increment = {};
             for (const [field, delta] of Object.entries(unsafeIncrement)) increment[mappedKeys[field] || getFieldName({
               model: unsafeModel,
               field
             })] = delta;
             let set;
-            if (unsafeSet && !config3.disableTransformInput) set = await transformInput(unsafeSet, unsafeModel, "update");
+            if (unsafeSet && !config4.disableTransformInput) set = await transformInput(unsafeSet, unsafeModel, "update");
             else set = unsafeSet;
             if (Object.keys(increment).length === 0 && (!set || Object.keys(set).length === 0)) throw new BetterAuthError("incrementOne resolved to an empty update: every increment/set field was unknown to the schema or transformed away.");
             res = await withSpan(`db incrementOne ${model}`, {
@@ -25436,7 +25436,7 @@ var init_factory = __esm({
                 }],
                 update: nextValues
               });
-              if (typeof updated !== "number") throw new BetterAuthError(`Adapter "${config3.adapterId}" returned a non-numeric value from updateMany during the incrementOne fallback. Return the number of updated rows, or implement a native incrementOne for atomic guarded counter updates.`);
+              if (typeof updated !== "number") throw new BetterAuthError(`Adapter "${config4.adapterId}" returned a non-numeric value from updateMany during the incrementOne fallback. Return the number of updated rows, or implement a native incrementOne for atomic guarded counter updates.`);
               return updated > 0 ? {
                 ...target,
                 ...nextValues
@@ -25449,7 +25449,7 @@ var init_factory = __esm({
             data: res
           });
           let transformed = res;
-          if (!config3.disableTransformOutput && resultNeedsOutputTransform && res) transformed = await transformOutput(res, unsafeModel, void 0, void 0);
+          if (!config4.disableTransformOutput && resultNeedsOutputTransform && res) transformed = await transformOutput(res, unsafeModel, void 0, void 0);
           debugLog({ method: "incrementOne" }, `${formatTransactionId(thisTransactionId)} ${formatStep(3, 3)}`, `${formatMethod("incrementOne")} ${formatAction("Parsed Result")}:`, {
             model,
             data: transformed
@@ -25492,11 +25492,11 @@ var init_factory = __esm({
           });
         } : void 0,
         options: {
-          adapterConfig: config3,
+          adapterConfig: config4,
           ...adapterInstance.options ?? {}
         },
-        id: config3.adapterId,
-        ...config3.debugLogs?.isRunningAdapterTests ? { adapterTestDebugLogs: {
+        id: config4.adapterId,
+        ...config4.debugLogs?.isRunningAdapterTests ? { adapterTestDebugLogs: {
           resetDebugLogs() {
             debugLogs = debugLogs.filter((log) => log.instance !== uniqueAdapterFactoryInstanceId);
           },
@@ -25598,14 +25598,14 @@ var init_dist5 = __esm({
   "../../node_modules/@better-auth/memory-adapter/dist/index.mjs"() {
     init_adapter();
     init_env();
-    memoryAdapter = (db2, config3) => {
+    memoryAdapter = (db2, config4) => {
       let lazyOptions = null;
       const buildAdapterFactory = (activeDb) => createAdapterFactory({
         config: {
           adapterId: "memory",
           adapterName: "Memory Adapter",
           usePlural: false,
-          debugLogs: config3?.debugLogs || false,
+          debugLogs: config4?.debugLogs || false,
           supportsArrays: true,
           customTransformInput(props) {
             if (props.options.advanced?.database?.generateId === "serial" && props.field === "id" && props.action === "create") return activeDb[props.model].length + 1;
@@ -40229,9 +40229,9 @@ var init_log = __esm({
     Log = class {
       #levels;
       #logger;
-      constructor(config3) {
-        if (isFunction2(config3)) {
-          this.#logger = config3;
+      constructor(config4) {
+        if (isFunction2(config4)) {
+          this.#logger = config4;
           this.#levels = freeze({
             query: true,
             error: true
@@ -40239,8 +40239,8 @@ var init_log = __esm({
         } else {
           this.#logger = defaultLogger;
           this.#levels = freeze({
-            query: config3.includes("query"),
-            error: config3.includes("error")
+            query: config4.includes("query"),
+            error: config4.includes("error")
           });
         }
       }
@@ -43046,8 +43046,8 @@ var init_sqlite_driver = __esm({
       #config;
       #db;
       #connection;
-      constructor(config3) {
-        this.#config = freeze({ ...config3 });
+      constructor(config4) {
+        this.#config = freeze({ ...config4 });
       }
       async init(options) {
         this.#db = isFunction2(this.#config.database) ? await this.#config.database(options) : this.#config.database;
@@ -43279,8 +43279,8 @@ var init_sqlite_dialect = __esm({
     init_object_utils();
     SqliteDialect = class {
       #config;
-      constructor(config3) {
-        this.#config = freeze({ ...config3 });
+      constructor(config4) {
+        this.#config = freeze({ ...config4 });
       }
       createDriver() {
         return new SqliteDriver(this.#config);
@@ -43334,8 +43334,8 @@ var init_mysql_driver = __esm({
       #config;
       #connections = /* @__PURE__ */ new WeakMap();
       #pool;
-      constructor(config3) {
-        this.#config = freeze({ ...config3 });
+      constructor(config4) {
+        this.#config = freeze({ ...config4 });
       }
       async init(options) {
         this.#pool = isFunction2(this.#config.pool) ? await this.#config.pool(options) : this.#config.pool;
@@ -43500,9 +43500,9 @@ var init_mysql_driver = __esm({
         if (!this.#queryId) {
           return;
         }
-        const { config: config3 } = this.#connection;
+        const { config: config4 } = this.#connection;
         const queryIdToCancel = this.#queryId;
-        if (!this.#controlConnection || !config3) {
+        if (!this.#controlConnection || !config4) {
           return await controlConnectionProvider(async (controlConnection2) => {
             if (queryIdToCancel.queryId === this.#queryId?.queryId) {
               await controlConnection2.executeQuery(CompiledQuery.raw(query, []));
@@ -43514,7 +43514,7 @@ var init_mysql_driver = __esm({
           clientFlags: _,
           maxPacketSize: __,
           ...cfg
-        } = config3;
+        } = config4;
         const controlConnection = this.#controlConnection(cfg);
         try {
           await new Promise((resolve, reject) => {
@@ -43722,8 +43722,8 @@ var init_mysql_dialect = __esm({
     init_mysql_adapter();
     MysqlDialect = class {
       #config;
-      constructor(config3) {
-        this.#config = config3;
+      constructor(config4) {
+        this.#config = config4;
       }
       createDriver() {
         return new MysqlDriver(this.#config);
@@ -43755,8 +43755,8 @@ var init_postgres_driver = __esm({
       #config;
       #connections = /* @__PURE__ */ new WeakMap();
       #pool;
-      constructor(config3) {
-        this.#config = freeze({ ...config3 });
+      constructor(config4) {
+        this.#config = freeze({ ...config4 });
       }
       async init(options) {
         this.#pool = isFunction2(this.#config.pool) ? await this.#config.pool(options) : this.#config.pool;
@@ -44037,8 +44037,8 @@ var init_postgres_dialect = __esm({
     init_postgres_adapter();
     PostgresDialect = class {
       #config;
-      constructor(config3) {
-        this.#config = config3;
+      constructor(config4) {
+        this.#config = config4;
       }
       createDriver() {
         return new PostgresDriver(this.#config);
@@ -44097,8 +44097,8 @@ var init_mssql_driver = __esm({
     MssqlDriver = class {
       #config;
       #pool;
-      constructor(config3) {
-        this.#config = freeze({ ...config3 });
+      constructor(config4) {
+        this.#config = freeze({ ...config4 });
         const { tarn, tedious, validateConnections } = this.#config;
         this.#pool = new tarn.Pool({
           ...tarn.options,
@@ -44606,8 +44606,8 @@ var init_mssql_dialect = __esm({
     init_mssql_query_compiler();
     MssqlDialect = class {
       #config;
-      constructor(config3) {
-        this.#config = config3;
+      constructor(config4) {
+        this.#config = config4;
       }
       createDriver() {
         return new MssqlDriver(this.#config);
@@ -45006,8 +45006,8 @@ var init_bun_sqlite_dialect_BW9W1_Ps = __esm({
       #connectionMutex = new ConnectionMutex2();
       #db;
       #connection;
-      constructor(config3) {
-        this.#config = { ...config3 };
+      constructor(config4) {
+        this.#config = { ...config4 };
       }
       async init() {
         this.#db = this.#config.database;
@@ -45123,8 +45123,8 @@ var init_bun_sqlite_dialect_BW9W1_Ps = __esm({
     };
     BunSqliteDialect = class {
       #config;
-      constructor(config3) {
-        this.#config = { ...config3 };
+      constructor(config4) {
+        this.#config = { ...config4 };
       }
       createDriver() {
         return new BunSqliteDriver(this.#config);
@@ -45178,8 +45178,8 @@ var init_node_sqlite_dialect = __esm({
       #connectionMutex = new ConnectionMutex3();
       #db;
       #connection;
-      constructor(config3) {
-        this.#config = { ...config3 };
+      constructor(config4) {
+        this.#config = { ...config4 };
       }
       async init() {
         this.#db = this.#config.database;
@@ -45295,8 +45295,8 @@ var init_node_sqlite_dialect = __esm({
     };
     NodeSqliteDialect = class {
       #config;
-      constructor(config3) {
-        this.#config = { ...config3 };
+      constructor(config4) {
+        this.#config = { ...config4 };
       }
       createDriver() {
         return new NodeSqliteDriver(this.#config);
@@ -45329,8 +45329,8 @@ var init_d1_sqlite_dialect_BLC8LXE6 = __esm({
     D1SqliteDriver = class {
       #config;
       #connection;
-      constructor(config3) {
-        this.#config = { ...config3 };
+      constructor(config4) {
+        this.#config = { ...config4 };
       }
       async init() {
         this.#connection = new D1SqliteConnection(this.#config.database);
@@ -45419,8 +45419,8 @@ var init_d1_sqlite_dialect_BLC8LXE6 = __esm({
     };
     D1SqliteDialect = class {
       #config;
-      constructor(config3) {
-        this.#config = { ...config3 };
+      constructor(config4) {
+        this.#config = { ...config4 };
       }
       createDriver() {
         return new D1SqliteDriver(this.#config);
@@ -45490,8 +45490,8 @@ var init_dist7 = __esm({
     init_adapter();
     init_env();
     init_string();
-    createKyselyAdapter = async (config3) => {
-      const db2 = config3.database;
+    createKyselyAdapter = async (config4) => {
+      const db2 = config4.database;
       if (!db2) return {
         kysely: null,
         databaseType: null,
@@ -45544,12 +45544,12 @@ var init_dist7 = __esm({
         transaction: void 0
       };
     };
-    kyselyAdapter = (db2, config3) => {
+    kyselyAdapter = (db2, config4) => {
       let lazyOptions = null;
       let mysqlNoIdWarned = false;
       const createCustomAdapter = (db3, inTransaction = false) => {
         return ({ getFieldName, schema: schema2, getDefaultFieldName, getDefaultModelName, getFieldAttributes, getModelName, options }) => {
-          if (config3?.type === "mysql" && options.advanced?.database?.generateId === false && !mysqlNoIdWarned) {
+          if (config4?.type === "mysql" && options.advanced?.database?.generateId === false && !mysqlNoIdWarned) {
             mysqlNoIdWarned = true;
             logger.warn(`[Kysely Adapter] MySQL does not support INSERT...RETURNING. With generateId set to false, the adapter uses best-effort fallback strategies (unique columns, full-field match) to retrieve inserted rows. For reliable behavior, use Better Auth's default ID generation, a custom generateId function, or generateId: "serial" for auto-increment.`);
           }
@@ -45576,7 +45576,7 @@ var init_dist7 = __esm({
             };
           };
           const withReturning = async (values, builder, model, where) => {
-            if (config3?.type === "mysql") {
+            if (config4?.type === "mysql") {
               await builder.execute();
               if (where.length > 0) {
                 const field = values.id ? "id" : where[0]?.field ? where[0].field : "id";
@@ -45626,7 +45626,7 @@ var init_dist7 = __esm({
               };
               return inTransaction ? fetchInserted(db3) : db3.transaction().execute(fetchInserted);
             }
-            if (config3?.type === "mssql") return await builder.outputAll("inserted").executeTakeFirst();
+            if (config4?.type === "mssql") return await builder.outputAll("inserted").executeTakeFirst();
             return await builder.returningAll().executeTakeFirst();
           };
           function convertWhereClause(model, w) {
@@ -45663,15 +45663,15 @@ var init_dist7 = __esm({
                   return eb(f, "not in", Array.isArray(value) ? value : [value]);
                 }
                 if (operator === "contains") {
-                  if (isInsensitive && typeof value === "string") return insensitiveIlike(f, `%${value}%`, config3?.type);
+                  if (isInsensitive && typeof value === "string") return insensitiveIlike(f, `%${value}%`, config4?.type);
                   return eb(f, "like", `%${value}%`);
                 }
                 if (operator === "starts_with") {
-                  if (isInsensitive && typeof value === "string") return insensitiveIlike(f, `${value}%`, config3?.type);
+                  if (isInsensitive && typeof value === "string") return insensitiveIlike(f, `${value}%`, config4?.type);
                   return eb(f, "like", `${value}%`);
                 }
                 if (operator === "ends_with") {
-                  if (isInsensitive && typeof value === "string") return insensitiveIlike(f, `%${value}`, config3?.type);
+                  if (isInsensitive && typeof value === "string") return insensitiveIlike(f, `%${value}`, config4?.type);
                   return eb(f, "like", `%${value}`);
                 }
                 if (operator === "eq") {
@@ -45797,7 +45797,7 @@ var init_dist7 = __esm({
               const { and: and2, or: or2 } = convertWhereClause(model, where);
               let query = db3.selectFrom((eb) => {
                 let b = eb.selectFrom(model);
-                if (config3?.type === "mssql") {
+                if (config4?.type === "mssql") {
                   if (offset !== void 0) {
                     if (!sortBy) b = b.orderBy(getFieldName({
                       model,
@@ -45892,18 +45892,18 @@ var init_dist7 = __esm({
                 const targetId = row[idField] ?? row.id;
                 if (targetId === void 0 || targetId === null) return null;
                 const query = db4.deleteFrom(model).where(`${model}.${idField}`, "=", targetId);
-                if (config3?.type === "mysql") {
+                if (config4?.type === "mysql") {
                   const result = await query.executeTakeFirst();
                   return Number(result.numDeletedRows) > 0 ? row : null;
                 }
-                if (config3?.type === "mssql") return await query.outputAll("deleted").executeTakeFirst() ?? null;
+                if (config4?.type === "mssql") return await query.outputAll("deleted").executeTakeFirst() ?? null;
                 return await query.returningAll().executeTakeFirst() ?? null;
               };
               const deleteWithReturning = async (query) => {
-                if (config3?.type === "mssql") return await query.outputAll("deleted").executeTakeFirst() ?? null;
+                if (config4?.type === "mssql") return await query.outputAll("deleted").executeTakeFirst() ?? null;
                 return await query.returningAll().executeTakeFirst() ?? null;
               };
-              if (config3?.type === "mysql") {
+              if (config4?.type === "mysql") {
                 const claimFromTransaction = async (trx) => {
                   const row = await applyWhere(trx.selectFrom(model).selectAll().forUpdate()).limit(1).executeTakeFirst();
                   if (!row) return null;
@@ -45912,7 +45912,7 @@ var init_dist7 = __esm({
                 return inTransaction ? claimFromTransaction(db3) : db3.transaction().execute(claimFromTransaction);
               }
               const selectIds = applyWhere(db3.selectFrom(model).select(`${model}.${idField}`));
-              const targetIds = config3?.type === "mssql" ? selectIds.top(1) : selectIds.limit(1);
+              const targetIds = config4?.type === "mssql" ? selectIds.top(1) : selectIds.limit(1);
               return deleteWithReturning(db3.deleteFrom(model).where(`${model}.${idField}`, "in", targetIds));
             },
             async incrementOne({ model, where, increment, set }) {
@@ -45928,7 +45928,7 @@ var init_dist7 = __esm({
                 model,
                 field: "id"
               });
-              if (config3?.type === "mysql") {
+              if (config4?.type === "mysql") {
                 const incrementInTransaction = async (trx) => {
                   const target = await applyWhere(trx.selectFrom(model).select(`${model}.${idField}`).forUpdate()).limit(1).executeTakeFirst();
                   if (!target) return null;
@@ -45941,12 +45941,12 @@ var init_dist7 = __esm({
                 return inTransaction ? incrementInTransaction(db3) : db3.transaction().execute(incrementInTransaction);
               }
               const selectIds = applyWhere(db3.selectFrom(model).select(`${model}.${idField}`));
-              const targetIds = config3?.type === "mssql" ? selectIds.top(1) : selectIds.limit(1);
+              const targetIds = config4?.type === "mssql" ? selectIds.top(1) : selectIds.limit(1);
               const updateQuery = db3.updateTable(model).set(assignments).where(`${model}.${idField}`, "in", targetIds);
-              if (config3?.type === "mssql") return await updateQuery.outputAll("inserted").executeTakeFirst() ?? null;
+              if (config4?.type === "mssql") return await updateQuery.outputAll("inserted").executeTakeFirst() ?? null;
               return await updateQuery.returningAll().executeTakeFirst() ?? null;
             },
-            options: config3
+            options: config4
           };
         };
       };
@@ -45955,14 +45955,14 @@ var init_dist7 = __esm({
         config: {
           adapterId: "kysely",
           adapterName: "Kysely Adapter",
-          usePlural: config3?.usePlural,
-          debugLogs: config3?.debugLogs,
-          supportsBooleans: config3?.type === "sqlite" || config3?.type === "mssql" || config3?.type === "mysql" || !config3?.type ? false : true,
-          supportsDates: config3?.type === "sqlite" || config3?.type === "mssql" || !config3?.type ? false : true,
-          supportsJSON: config3?.type === "postgres" ? true : false,
+          usePlural: config4?.usePlural,
+          debugLogs: config4?.debugLogs,
+          supportsBooleans: config4?.type === "sqlite" || config4?.type === "mssql" || config4?.type === "mysql" || !config4?.type ? false : true,
+          supportsDates: config4?.type === "sqlite" || config4?.type === "mssql" || !config4?.type ? false : true,
+          supportsJSON: config4?.type === "postgres" ? true : false,
           supportsArrays: false,
-          supportsUUIDs: config3?.type === "postgres" ? true : false,
-          transaction: config3?.transaction ? (cb) => db2.transaction().execute((trx) => {
+          supportsUUIDs: config4?.type === "postgres" ? true : false,
+          transaction: config4?.transaction ? (cb) => db2.transaction().execute((trx) => {
             return cb(createAdapterFactory({
               config: {
                 ...adapterOptions.config,
@@ -46018,8 +46018,8 @@ var init_adapter_kysely = __esm({
 });
 
 // node_modules/better-auth/dist/db/get-schema.mjs
-function getSchema(config3) {
-  const tables = getAuthTables(config3);
+function getSchema(config4) {
+  const tables = getAuthTables(config4);
   const schema2 = {};
   for (const key in tables) {
     const table = tables[key];
@@ -46074,10 +46074,10 @@ async function getPostgresSchema(db2) {
   }
   return "public";
 }
-async function getMigrations(config3) {
-  const betterAuthSchema = getSchema(config3);
-  const logger2 = createLogger(config3.logger);
-  let { kysely: db2, databaseType: dbType } = await createKyselyAdapter(config3);
+async function getMigrations(config4) {
+  const betterAuthSchema = getSchema(config4);
+  const logger2 = createLogger(config4.logger);
+  let { kysely: db2, databaseType: dbType } = await createKyselyAdapter(config4);
   if (!dbType) {
     logger2.warn("Could not determine database type, defaulting to sqlite. Please provide a type in the database options to avoid this.");
     dbType = "sqlite";
@@ -46153,8 +46153,8 @@ async function getMigrations(config3) {
     });
   }
   const migrations = [];
-  const useUUIDs = config3.advanced?.database?.generateId === "uuid";
-  const useNumberId = config3.advanced?.database?.generateId === "serial";
+  const useUUIDs = config4.advanced?.database?.generateId === "uuid";
+  const useNumberId = config4.advanced?.database?.generateId === "serial";
   function getType(field, fieldName) {
     const type = field.type;
     const provider = dbType || "sqlite";
@@ -46223,11 +46223,11 @@ async function getMigrations(config3) {
     return typeMap[type][provider];
   }
   const getModelName = initGetModelName({
-    schema: getAuthTables(config3),
+    schema: getAuthTables(config4),
     usePlural: false
   });
   const getFieldName = initGetFieldName({
-    schema: getAuthTables(config3),
+    schema: getAuthTables(config4),
     usePlural: false
   });
   function getReferencePath(model, field) {
@@ -46987,12 +46987,12 @@ Most of the features of Better Auth will not work correctly.`);
   const cookies = getCookies(options);
   const tables = getAuthTables(options);
   const providers = (await Promise.all(Object.entries(options.socialProviders || {}).map(async ([key, originalConfig]) => {
-    const config3 = typeof originalConfig === "function" ? await originalConfig() : originalConfig;
-    if (config3 == null) return null;
-    if (config3.enabled === false) return null;
-    if (!config3.clientId) logger2.warn(`Social provider ${key} is missing clientId or clientSecret`);
-    const provider = socialProviders[key](config3);
-    provider.disableImplicitSignUp = config3.disableImplicitSignUp;
+    const config4 = typeof originalConfig === "function" ? await originalConfig() : originalConfig;
+    if (config4 == null) return null;
+    if (config4.enabled === false) return null;
+    if (!config4.clientId) logger2.warn(`Social provider ${key} is missing clientId or clientSecret`);
+    const provider = socialProviders[key](config4);
+    provider.disableImplicitSignUp = config4.disableImplicitSignUp;
     return provider;
   }))).filter((x) => x !== null);
   const generateIdFunc = ({ model, size }) => {
@@ -47310,23 +47310,23 @@ var init_dist10 = __esm({
     init_env();
     init_error2();
     import_drizzle_orm2 = require("drizzle-orm");
-    drizzleAdapter = (db2, config3) => {
+    drizzleAdapter = (db2, config4) => {
       let lazyOptions = null;
       let mysqlNoIdWarned = false;
       const createCustomAdapter = (db3, inTransaction = false) => ({ getFieldName, getDefaultFieldName, getDefaultModelName, options, schema: baSchema }) => {
-        if (config3.provider === "mysql" && options.advanced?.database?.generateId === false && !mysqlNoIdWarned) {
+        if (config4.provider === "mysql" && options.advanced?.database?.generateId === false && !mysqlNoIdWarned) {
           mysqlNoIdWarned = true;
           logger.warn(`[Drizzle Adapter] MySQL does not support INSERT...RETURNING. With generateId set to false, the adapter uses best-effort fallback strategies (unique columns, full-field match) to retrieve inserted rows. For reliable behavior, use Better Auth's default ID generation, a custom generateId function, or generateId: "serial" for auto-increment.`);
         }
         function getSchema2(model) {
-          const schema2 = config3.schema || db3._.fullSchema;
+          const schema2 = config4.schema || db3._.fullSchema;
           if (!schema2) throw new BetterAuthError("Drizzle adapter failed to initialize. Schema not found. Please provide a schema object in the adapter options object.");
           const schemaModel = schema2[model];
           if (!schemaModel) throw new BetterAuthError(`[# Drizzle Adapter]: The model "${model}" was not found in the schema object. Please pass the schema directly to the adapter options.`);
           return schemaModel;
         }
         const withReturning = async (model, builder, data, where) => {
-          if (config3.provider !== "mysql") return (await builder.returning())[0];
+          if (config4.provider !== "mysql") return (await builder.returning())[0];
           await builder.execute();
           const schemaModel = getSchema2(model);
           const builderVal = builder.config?.values;
@@ -47401,15 +47401,15 @@ var init_dist10 = __esm({
               return [(0, import_drizzle_orm2.notInArray)(schemaModel[field], w.value)];
             }
             if (w.operator === "contains") {
-              if (isInsensitive && typeof w.value === "string") return [insensitiveIlike2(schemaModel[field], `%${w.value}%`, config3.provider)];
+              if (isInsensitive && typeof w.value === "string") return [insensitiveIlike2(schemaModel[field], `%${w.value}%`, config4.provider)];
               return [(0, import_drizzle_orm2.like)(schemaModel[field], `%${w.value}%`)];
             }
             if (w.operator === "starts_with") {
-              if (isInsensitive && typeof w.value === "string") return [insensitiveIlike2(schemaModel[field], `${w.value}%`, config3.provider)];
+              if (isInsensitive && typeof w.value === "string") return [insensitiveIlike2(schemaModel[field], `${w.value}%`, config4.provider)];
               return [(0, import_drizzle_orm2.like)(schemaModel[field], `${w.value}%`)];
             }
             if (w.operator === "ends_with") {
-              if (isInsensitive && typeof w.value === "string") return [insensitiveIlike2(schemaModel[field], `%${w.value}`, config3.provider)];
+              if (isInsensitive && typeof w.value === "string") return [insensitiveIlike2(schemaModel[field], `%${w.value}`, config4.provider)];
               return [(0, import_drizzle_orm2.like)(schemaModel[field], `%${w.value}`)];
             }
             if (w.operator === "lt") return [(0, import_drizzle_orm2.lt)(schemaModel[field], w.value)];
@@ -47444,15 +47444,15 @@ var init_dist10 = __esm({
               return (0, import_drizzle_orm2.notInArray)(schemaModel[field], w.value);
             }
             if (w.operator === "contains") {
-              if (isInsensitive && typeof w.value === "string") return insensitiveIlike2(schemaModel[field], `%${w.value}%`, config3.provider);
+              if (isInsensitive && typeof w.value === "string") return insensitiveIlike2(schemaModel[field], `%${w.value}%`, config4.provider);
               return (0, import_drizzle_orm2.like)(schemaModel[field], `%${w.value}%`);
             }
             if (w.operator === "starts_with") {
-              if (isInsensitive && typeof w.value === "string") return insensitiveIlike2(schemaModel[field], `${w.value}%`, config3.provider);
+              if (isInsensitive && typeof w.value === "string") return insensitiveIlike2(schemaModel[field], `${w.value}%`, config4.provider);
               return (0, import_drizzle_orm2.like)(schemaModel[field], `${w.value}%`);
             }
             if (w.operator === "ends_with") {
-              if (isInsensitive && typeof w.value === "string") return insensitiveIlike2(schemaModel[field], `%${w.value}`, config3.provider);
+              if (isInsensitive && typeof w.value === "string") return insensitiveIlike2(schemaModel[field], `%${w.value}`, config4.provider);
               return (0, import_drizzle_orm2.like)(schemaModel[field], `%${w.value}`);
             }
             if (w.operator === "lt") return (0, import_drizzle_orm2.lt)(schemaModel[field], w.value);
@@ -47486,15 +47486,15 @@ var init_dist10 = __esm({
               return (0, import_drizzle_orm2.notInArray)(schemaModel[field], w.value);
             }
             if (w.operator === "contains") {
-              if (isInsensitive && typeof w.value === "string") return insensitiveIlike2(schemaModel[field], `%${w.value}%`, config3.provider);
+              if (isInsensitive && typeof w.value === "string") return insensitiveIlike2(schemaModel[field], `%${w.value}%`, config4.provider);
               return (0, import_drizzle_orm2.like)(schemaModel[field], `%${w.value}%`);
             }
             if (w.operator === "starts_with") {
-              if (isInsensitive && typeof w.value === "string") return insensitiveIlike2(schemaModel[field], `${w.value}%`, config3.provider);
+              if (isInsensitive && typeof w.value === "string") return insensitiveIlike2(schemaModel[field], `${w.value}%`, config4.provider);
               return (0, import_drizzle_orm2.like)(schemaModel[field], `${w.value}%`);
             }
             if (w.operator === "ends_with") {
-              if (isInsensitive && typeof w.value === "string") return insensitiveIlike2(schemaModel[field], `%${w.value}`, config3.provider);
+              if (isInsensitive && typeof w.value === "string") return insensitiveIlike2(schemaModel[field], `%${w.value}`, config4.provider);
               return (0, import_drizzle_orm2.like)(schemaModel[field], `%${w.value}`);
             }
             if (w.operator === "lt") return (0, import_drizzle_orm2.lt)(schemaModel[field], w.value);
@@ -47532,12 +47532,12 @@ var init_dist10 = __esm({
         }
         function getQueryModel(model) {
           if (db3.query[model]) return model;
-          if (config3.usePlural) {
+          if (config4.usePlural) {
             const plural = `${model}s`;
             if (db3.query[plural]) return plural;
           }
-          if (config3.schema) {
-            const targetTable = config3.schema[model];
+          if (config4.schema) {
+            const targetTable = config4.schema[model];
             if (targetTable) {
               const fullSchema = db3._.fullSchema;
               if (fullSchema) {
@@ -47570,7 +47570,7 @@ var init_dist10 = __esm({
                   for (const [model2, joinAttr] of joinEntries) {
                     const limit = joinAttr.limit ?? options.advanced?.database?.defaultFindManyLimit ?? 100;
                     const isUnique = joinAttr.relation === "one-to-one";
-                    const pluralSuffix = isUnique || config3.usePlural ? "" : "s";
+                    const pluralSuffix = isUnique || config4.usePlural ? "" : "s";
                     includes[`${model2}${pluralSuffix}`] = isUnique ? true : { limit };
                     if (!isUnique) pluralJoinResults.push(`${model2}${pluralSuffix}`);
                   }
@@ -47587,7 +47587,7 @@ var init_dist10 = __esm({
                   with: includes
                 });
                 if (res2) for (const pluralJoinResult of pluralJoinResults) {
-                  const singularKey = !config3.usePlural ? pluralJoinResult.slice(0, -1) : pluralJoinResult;
+                  const singularKey = !config4.usePlural ? pluralJoinResult.slice(0, -1) : pluralJoinResult;
                   res2[singularKey] = res2[pluralJoinResult];
                   if (pluralJoinResult !== singularKey) delete res2[pluralJoinResult];
                 }
@@ -47625,7 +47625,7 @@ var init_dist10 = __esm({
                   for (const [model2, joinAttr] of joinEntries) {
                     const isUnique = joinAttr.relation === "one-to-one";
                     const limit2 = joinAttr.limit ?? options.advanced?.database?.defaultFindManyLimit ?? 100;
-                    const pluralSuffix = isUnique || config3.usePlural ? "" : "s";
+                    const pluralSuffix = isUnique || config4.usePlural ? "" : "s";
                     includes[`${model2}${pluralSuffix}`] = isUnique ? true : { limit: limit2 };
                     if (!isUnique) pluralJoinResults.push(`${model2}${pluralSuffix}`);
                   }
@@ -47650,7 +47650,7 @@ var init_dist10 = __esm({
                   orderBy
                 });
                 if (res) for (const item of res) for (const pluralJoinResult of pluralJoinResults) {
-                  const singularKey = !config3.usePlural ? pluralJoinResult.slice(0, -1) : pluralJoinResult;
+                  const singularKey = !config4.usePlural ? pluralJoinResult.slice(0, -1) : pluralJoinResult;
                   if (singularKey === pluralJoinResult) continue;
                   item[singularKey] = item[pluralJoinResult];
                   delete item[pluralJoinResult];
@@ -47717,7 +47717,7 @@ var init_dist10 = __esm({
               field: "id"
             });
             const idColumn = schemaModel[idField];
-            if (config3.provider === "mysql") {
+            if (config4.provider === "mysql") {
               const claimFromTransaction = async (tx) => {
                 const target = (await tx.select().from(schemaModel).where(...clause).for("update").limit(1))[0];
                 if (!target) return null;
@@ -47760,7 +47760,7 @@ var init_dist10 = __esm({
               if (!schemaModel[columnName]) throw new BetterAuthError(`The field "${field}" does not exist in the schema for the model "${model}". Please update your schema.`);
               assignments[columnName] = value;
             }
-            if (config3.provider === "mysql") {
+            if (config4.provider === "mysql") {
               const mutateInTransaction = async (tx) => {
                 const target = (await tx.select().from(schemaModel).where(...clause).for("update").limit(1))[0];
                 if (!target) return null;
@@ -47775,7 +47775,7 @@ var init_dist10 = __esm({
             const targetIds = db3.select({ id: idColumn }).from(schemaModel).where(...clause).limit(1);
             return (await db3.update(schemaModel).set(assignments).where((0, import_drizzle_orm2.inArray)(idColumn, targetIds)).returning())[0] ?? null;
           },
-          options: config3
+          options: config4
         };
       };
       let adapterOptions = null;
@@ -47783,11 +47783,11 @@ var init_dist10 = __esm({
         config: {
           adapterId: "drizzle",
           adapterName: "Drizzle Adapter",
-          usePlural: config3.usePlural ?? false,
-          debugLogs: config3.debugLogs ?? false,
-          supportsUUIDs: config3.provider === "pg" ? true : false,
-          supportsJSON: config3.provider === "pg" ? true : false,
-          supportsArrays: config3.provider === "pg" ? true : false,
+          usePlural: config4.usePlural ?? false,
+          debugLogs: config4.debugLogs ?? false,
+          supportsUUIDs: config4.provider === "pg" ? true : false,
+          supportsJSON: config4.provider === "pg" ? true : false,
+          supportsArrays: config4.provider === "pg" ? true : false,
           customTransformOutput: ({ data, fieldAttributes }) => {
             if (fieldAttributes.type === "date") {
               if (data === null || data === void 0) return data;
@@ -47795,7 +47795,7 @@ var init_dist10 = __esm({
             }
             return data;
           },
-          transaction: config3.transaction ?? false ? (cb) => db2.transaction((tx) => {
+          transaction: config4.transaction ?? false ? (cb) => db2.transaction((tx) => {
             return cb(createAdapterFactory({
               config: {
                 ...adapterOptions.config,
@@ -47876,6 +47876,7 @@ var init_auth = __esm({
 // src/index.ts
 var index_exports = {};
 __export(index_exports, {
+  config: () => config3,
   default: () => index_default
 });
 module.exports = __toCommonJS(index_exports);
@@ -49371,6 +49372,15 @@ if (process.env.NODE_ENV !== "production") {
   });
 }
 var index_default = app;
+var config3 = {
+  api: {
+    bodyParser: false
+  }
+};
+// Annotate the CommonJS export names for ESM import in node:
+0 && (module.exports = {
+  config
+});
 /*! Bundled license information:
 
 @noble/ciphers/utils.js:
