@@ -20,7 +20,8 @@ import {
   createReview,
   updateReview,
   updateReviewApproval,
-  deleteReview
+  deleteReview,
+  uploadProductImage
 } from '../utils/api';
 
 type AdminTab = 'products' | 'categories' | 'about' | 'contact' | 'reviews';
@@ -65,6 +66,9 @@ export const AdminDashboard: React.FC = () => {
     badge: '',
     altText: ''
   });
+
+  const [imageUploading, setImageUploading] = useState(false);
+  const [imageInputMode, setImageInputMode] = useState<'upload' | 'url'>('upload');
 
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
@@ -1317,28 +1321,124 @@ export const AdminDashboard: React.FC = () => {
               </div>
 
               <div className="space-y-2">
-                <label htmlFor="prodImgUrl" className="text-xs font-bold">URL Foto Produk *</label>
-                <input
-                  type="url"
-                  id="prodImgUrl"
-                  value={productForm.image}
-                  onChange={(e) => setProductForm({ ...productForm, image: e.target.value })}
-                  className="w-full px-3.5 py-2.5 text-sm bg-surface-container-lowest dark:bg-surface-dim border border-outline-variant rounded-xl outline-none focus:border-primary"
-                  placeholder="https://example.com/gambar-kemplang.jpg"
-                  required
-                />
-                
-                {productForm.image && (
-                  <div className="mt-2 relative w-full h-[180px] rounded-2xl overflow-hidden border border-outline-variant/30">
-                    <img
-                      src={productForm.image}
-                      alt="Pratinjau Produk"
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).src = 'https://placehold.co/600x400?text=Gambar+Tidak+Valid';
-                      }}
-                    />
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-bold">Foto Produk *</label>
+                  <button
+                    type="button"
+                    onClick={() => setImageInputMode(imageInputMode === 'upload' ? 'url' : 'upload')}
+                    className="text-[10px] font-bold text-primary dark:text-secondary-container hover:underline"
+                  >
+                    {imageInputMode === 'upload' ? 'Paste URL Manual' : 'Upload File'}
+                  </button>
+                </div>
+
+                {imageInputMode === 'upload' ? (
+                  <div
+                    className={`relative w-full border-2 border-dashed rounded-2xl transition-all ${
+                      imageUploading
+                        ? 'border-primary/50 bg-primary/5'
+                        : productForm.image
+                        ? 'border-green-400/50 bg-green-50/30 dark:bg-green-900/10'
+                        : 'border-outline-variant hover:border-primary/40 hover:bg-primary/5'
+                    }`}
+                    onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); }}
+                    onDrop={async (e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      const file = e.dataTransfer.files?.[0];
+                      if (!file || !file.type.startsWith('image/')) return;
+                      try {
+                        setImageUploading(true);
+                        const result = await uploadProductImage(file);
+                        setProductForm(prev => ({ ...prev, image: result.imageUrl }));
+                      } catch (err: any) {
+                        showNotification(err.message || 'Gagal upload gambar.', true);
+                      } finally {
+                        setImageUploading(false);
+                      }
+                    }}
+                  >
+                    {imageUploading ? (
+                      <div className="flex flex-col items-center justify-center py-10 gap-3">
+                        <svg className="animate-spin h-8 w-8 text-primary" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                        </svg>
+                        <span className="text-xs font-bold text-primary animate-pulse">Mengupload ke Cloudinary...</span>
+                      </div>
+                    ) : productForm.image ? (
+                      <div className="relative">
+                        <img
+                          src={productForm.image}
+                          alt="Pratinjau Produk"
+                          className="w-full h-[180px] object-cover rounded-2xl"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = 'https://placehold.co/600x400?text=Gambar+Tidak+Valid';
+                          }}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setProductForm(prev => ({ ...prev, image: '' }))}
+                          className="absolute top-2 right-2 w-8 h-8 rounded-full bg-error/90 text-white flex items-center justify-center hover:bg-error active:scale-95 transition-all shadow-lg"
+                          title="Hapus gambar"
+                        >
+                          <span className="material-symbols-outlined text-sm">close</span>
+                        </button>
+                        <div className="absolute bottom-2 left-2 bg-green-600/90 text-white text-[10px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1 shadow">
+                          <span className="material-symbols-outlined text-xs">check_circle</span>
+                          Terupload
+                        </div>
+                      </div>
+                    ) : (
+                      <label className="flex flex-col items-center justify-center py-10 gap-2 cursor-pointer">
+                        <span className="material-symbols-outlined text-[40px] text-outline-variant">cloud_upload</span>
+                        <span className="text-xs font-bold text-on-surface-variant">Klik untuk pilih atau drag & drop gambar</span>
+                        <span className="text-[10px] text-outline-variant">Format: JPG, PNG, WebP (Maks. 5MB)</span>
+                        <input
+                          type="file"
+                          accept="image/jpeg,image/png,image/webp,image/gif"
+                          className="hidden"
+                          onChange={async (e) => {
+                            const file = e.target.files?.[0];
+                            if (!file) return;
+                            try {
+                              setImageUploading(true);
+                              const result = await uploadProductImage(file);
+                              setProductForm(prev => ({ ...prev, image: result.imageUrl }));
+                            } catch (err: any) {
+                              showNotification(err.message || 'Gagal upload gambar.', true);
+                            } finally {
+                              setImageUploading(false);
+                            }
+                          }}
+                        />
+                      </label>
+                    )}
                   </div>
+                ) : (
+                  <>
+                    <input
+                      type="url"
+                      id="prodImgUrl"
+                      value={productForm.image}
+                      onChange={(e) => setProductForm({ ...productForm, image: e.target.value })}
+                      className="w-full px-3.5 py-2.5 text-sm bg-surface-container-lowest dark:bg-surface-dim border border-outline-variant rounded-xl outline-none focus:border-primary"
+                      placeholder="https://res.cloudinary.com/.../gambar.jpg"
+                      required
+                    />
+                    {productForm.image && (
+                      <div className="mt-2 relative w-full h-[180px] rounded-2xl overflow-hidden border border-outline-variant/30">
+                        <img
+                          src={productForm.image}
+                          alt="Pratinjau Produk"
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = 'https://placehold.co/600x400?text=Gambar+Tidak+Valid';
+                          }}
+                        />
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
 

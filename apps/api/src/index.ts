@@ -1,8 +1,6 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import path from "path";
-import fs from "fs";
 
 dotenv.config();
 
@@ -35,19 +33,7 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Ensure uploads folder exists (does not crash on read-only serverless filesystems like Vercel)
-const isVercel = process.env.VERCEL === "1";
-const uploadsDir = isVercel ? "/tmp/uploads" : path.join(__dirname, "../uploads");
-try {
-  if (!fs.existsSync(uploadsDir)) {
-    fs.mkdirSync(uploadsDir, { recursive: true });
-  }
-} catch (err) {
-  console.warn("Warning: Could not create uploads directory:", err);
-}
-
-// Serve uploaded images statically
-app.use("/api/uploads", express.static(uploadsDir));
+// Images are hosted on Cloudinary CDN — no local uploads directory needed
 
 // Simple logger middleware
 app.use((req, res, next) => {

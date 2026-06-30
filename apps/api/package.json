@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "dev": "tsx watch src/index.ts",
-    "build": "esbuild src/index.ts --bundle --platform=node --target=node20 --outfile=dist/index.js --external:express --external:cors --external:pg --external:multer --external:dotenv --external:drizzle-orm --external:pg-native",
+    "build": "esbuild src/index.ts --bundle --platform=node --target=node20 --outfile=dist/index.js --external:express --external:cors --external:pg --external:multer --external:dotenv --external:drizzle-orm --external:pg-native --external:cloudinary",
     "start": "node dist/index.js",
     "db:generate": "drizzle-kit generate",
     "db:push": "drizzle-kit push"
@@ -13,6 +13,7 @@
   "dependencies": {
     "@kemplang/types": "*",
     "better-auth": "^1.1.1",
+    "cloudinary": "^2.10.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "drizzle-orm": "^0.45.2",

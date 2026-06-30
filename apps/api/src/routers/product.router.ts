@@ -2,36 +2,18 @@ import { Router, Request, Response, NextFunction } from "express";
 import { ProductService } from "../services/product.service";
 import { authenticateSession, requireAdmin, AuthenticatedRequest } from "../middleware/auth.middleware";
 import multer from "multer";
-import path from "path";
-import fs from "fs";
+import { cloudinary } from "../config/cloudinary";
 
 export const productRouter = Router();
 
-// Configure storage for product images
-const isVercel = process.env.VERCEL === "1";
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const uploadsDir = isVercel ? "/tmp/uploads" : path.join(__dirname, "../../uploads");
-    if (!fs.existsSync(uploadsDir)) {
-      fs.mkdirSync(uploadsDir, { recursive: true });
-    }
-    cb(null, uploadsDir);
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    const ext = path.extname(file.originalname);
-    cb(null, `${file.fieldname}-${uniqueSuffix}${ext}`);
-  }
-});
-
+// Use memory storage instead of disk — works on Vercel serverless and feeds directly to Cloudinary
 const upload = multer({
-  storage,
+  storage: multer.memoryStorage(),
   limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
   fileFilter: (req, file, cb) => {
     const allowedTypes = /jpeg|jpg|png|webp|gif/;
     const mimeType = allowedTypes.test(file.mimetype);
-    const extName = allowedTypes.test(path.extname(file.originalname).toLowerCase());
-    if (mimeType && extName) {
+    if (mimeType) {
       return cb(null, true);
     }
     cb(new Error("Only images are allowed (jpeg, jpg, png, webp, gif)"));
@@ -65,7 +47,7 @@ productRouter.get("/:id", async (req: Request, res: Response, next: NextFunction
   }
 });
 
-// POST upload product image (Admin only)
+// POST upload product image to Cloudinary (Admin only)
 productRouter.post(
   "/upload",
   authenticateSession,
@@ -76,10 +58,31 @@ productRouter.post(
       if (!req.file) {
         return res.status(400).json({ error: "No file uploaded" });
       }
-      // Return the relative URL of the uploaded file
-      const fileUrl = `/api/uploads/${req.file.filename}`;
-      res.json({ imageUrl: fileUrl });
+
+      // Upload to Cloudinary using a stream from the memory buffer
+      const result = await new Promise<any>((resolve, reject) => {
+        const uploadStream = cloudinary.uploader.upload_stream(
+          {
+            folder: "kemplang-aleng/products",
+            resource_type: "image",
+            transformation: [
+              { quality: "auto", fetch_format: "auto" } // Auto-optimize for best format & quality
+            ]
+          },
+          (error, result) => {
+            if (error) reject(error);
+            else resolve(result);
+          }
+        );
+        uploadStream.end(req.file!.buffer);
+      });
+
+      res.json({
+        imageUrl: result.secure_url,
+        publicId: result.public_id
+      });
     } catch (error) {
+      console.error("Cloudinary upload error:", error);
       next(error);
     }
   }
