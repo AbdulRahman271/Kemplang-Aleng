@@ -801,13 +801,13 @@ function assertHasProtocol(url) {
     throw new BetterAuthError(`Invalid base URL: ${url}. Please provide a valid base URL.`, { cause: error3 });
   }
 }
-function withPath(url, path4 = "/api/auth") {
+function withPath(url, path2 = "/api/auth") {
   assertHasProtocol(url);
   if (checkHasPath(url)) return url;
   const trimmedUrl = trimTrailingSlashes(url);
-  if (!path4 || path4 === "/") return trimmedUrl;
-  path4 = path4.startsWith("/") ? path4 : `/${path4}`;
-  return `${trimmedUrl}${path4}`;
+  if (!path2 || path2 === "/") return trimmedUrl;
+  path2 = path2.startsWith("/") ? path2 : `/${path2}`;
+  return `${trimmedUrl}${path2}`;
 }
 function validateProxyHeader(header, type) {
   if (!header || header.trim() === "") return false;
@@ -827,26 +827,26 @@ function validateProxyHeader(header, type) {
   }
   return false;
 }
-function getBaseURL(url, path4, request, loadEnv, trustedProxyHeaders) {
-  if (url) return withPath(url, path4);
+function getBaseURL(url, path2, request, loadEnv, trustedProxyHeaders) {
+  if (url) return withPath(url, path2);
   if (loadEnv !== false) {
     const fromEnv = env.BETTER_AUTH_URL || env.NEXT_PUBLIC_BETTER_AUTH_URL || env.PUBLIC_BETTER_AUTH_URL || env.NUXT_PUBLIC_BETTER_AUTH_URL || env.NUXT_PUBLIC_AUTH_URL || (env.BASE_URL !== "/" ? env.BASE_URL : void 0);
-    if (fromEnv) return withPath(fromEnv, path4);
+    if (fromEnv) return withPath(fromEnv, path2);
   }
   const fromRequest = request?.headers.get("x-forwarded-host");
   const fromRequestProto = request?.headers.get("x-forwarded-proto");
   if (fromRequest && fromRequestProto && trustedProxyHeaders) {
     if (validateProxyHeader(fromRequestProto, "proto") && validateProxyHeader(fromRequest, "host")) try {
-      return withPath(`${fromRequestProto}://${fromRequest}`, path4);
+      return withPath(`${fromRequestProto}://${fromRequest}`, path2);
     } catch (_error) {
     }
   }
   if (request) {
     const url2 = getOrigin(request.url);
     if (!url2) throw new BetterAuthError("Could not get origin from request. Please provide a valid base URL.");
-    return withPath(url2, path4);
+    return withPath(url2, path2);
   }
-  if (typeof window !== "undefined" && window.location) return withPath(window.location.origin, path4);
+  if (typeof window !== "undefined" && window.location) return withPath(window.location.origin, path2);
 }
 function getOrigin(url) {
   try {
@@ -6636,10 +6636,10 @@ function mergeDefs(...defs) {
 function cloneDef(schema2) {
   return mergeDefs(schema2._zod.def);
 }
-function getElementAtPath(obj, path4) {
-  if (!path4)
+function getElementAtPath(obj, path2) {
+  if (!path2)
     return obj;
-  return path4.reduce((acc, key) => acc?.[key], obj);
+  return path2.reduce((acc, key) => acc?.[key], obj);
 }
 function promiseAllObject(promisesObj) {
   const keys = Object.keys(promisesObj);
@@ -6967,11 +6967,11 @@ function explicitlyAborted(x, startIndex = 0) {
   }
   return false;
 }
-function prefixIssues(path4, issues) {
+function prefixIssues(path2, issues) {
   return issues.map((iss) => {
     var _a7;
     (_a7 = iss).path ?? (_a7.path = []);
-    iss.path.unshift(path4);
+    iss.path.unshift(path2);
     return iss;
   });
 }
@@ -7188,16 +7188,16 @@ function flattenError(error3, mapper = (issue2) => issue2.message) {
 }
 function formatError(error3, mapper = (issue2) => issue2.message) {
   const fieldErrors = { _errors: [] };
-  const processError = (error4, path4 = []) => {
+  const processError = (error4, path2 = []) => {
     for (const issue2 of error4.issues) {
       if (issue2.code === "invalid_union" && issue2.errors.length) {
-        issue2.errors.map((issues) => processError({ issues }, [...path4, ...issue2.path]));
+        issue2.errors.map((issues) => processError({ issues }, [...path2, ...issue2.path]));
       } else if (issue2.code === "invalid_key") {
-        processError({ issues: issue2.issues }, [...path4, ...issue2.path]);
+        processError({ issues: issue2.issues }, [...path2, ...issue2.path]);
       } else if (issue2.code === "invalid_element") {
-        processError({ issues: issue2.issues }, [...path4, ...issue2.path]);
+        processError({ issues: issue2.issues }, [...path2, ...issue2.path]);
       } else {
-        const fullpath = [...path4, ...issue2.path];
+        const fullpath = [...path2, ...issue2.path];
         if (fullpath.length === 0) {
           fieldErrors._errors.push(mapper(issue2));
         } else {
@@ -12496,7 +12496,7 @@ var init_context = __esm({
     init_validator();
     init_crypto2();
     init_cookies();
-    createInternalContext = async (context, { options, path: path4 }) => {
+    createInternalContext = async (context, { options, path: path2 }) => {
       const headers = new Headers();
       let responseStatus = void 0;
       const { data, error: error3 } = await runValidation(options, context);
@@ -12508,7 +12508,7 @@ var init_context = __esm({
         ...context,
         body: data.body,
         query: data.query,
-        path: context.path || path4 || "virtual:",
+        path: context.path || path2 || "virtual:",
         context: "context" in context && context.context ? context.context : {},
         returned: void 0,
         headers: context?.headers,
@@ -12590,16 +12590,16 @@ var init_context = __esm({
 
 // ../../node_modules/better-call/dist/endpoint.mjs
 function createEndpoint(pathOrOptions, handlerOrOptions, handlerOrNever) {
-  const path4 = typeof pathOrOptions === "string" ? pathOrOptions : void 0;
+  const path2 = typeof pathOrOptions === "string" ? pathOrOptions : void 0;
   const options = typeof handlerOrOptions === "object" ? handlerOrOptions : pathOrOptions;
   const handler = typeof handlerOrOptions === "function" ? handlerOrOptions : handlerOrNever;
   if ((options.method === "GET" || options.method === "HEAD") && options.body) throw new BetterCallError("Body is not allowed with GET or HEAD methods");
-  if (path4 && /\/{2,}/.test(path4)) throw new BetterCallError("Path cannot contain consecutive slashes");
+  if (path2 && /\/{2,}/.test(path2)) throw new BetterCallError("Path cannot contain consecutive slashes");
   const internalHandler = async (...inputCtx) => {
     const context = inputCtx[0] || {};
     const { data: internalContext, error: validationError } = await tryCatch(createInternalContext(context, {
       options,
-      path: path4
+      path: path2
     }));
     if (validationError) {
       if (!(validationError instanceof ValidationError)) throw validationError;
@@ -12638,7 +12638,7 @@ function createEndpoint(pathOrOptions, handlerOrOptions, handlerOrNever) {
     } : response;
   };
   internalHandler.options = options;
-  internalHandler.path = path4;
+  internalHandler.path = path2;
   return internalHandler;
 }
 var init_endpoint = __esm({
@@ -12648,8 +12648,8 @@ var init_endpoint = __esm({
     init_to_response();
     init_context();
     createEndpoint.create = (opts) => {
-      return (path4, options, handler) => {
-        return createEndpoint(path4, {
+      return (path2, options, handler) => {
+        return createEndpoint(path2, {
           ...options,
           use: [...options?.use || [], ...opts?.use || []]
         }, handler);
@@ -12913,8 +12913,8 @@ function createRouter() {
     static: new NullProtoObj()
   };
 }
-function splitPath(path4) {
-  const [_, ...s] = path4.split("/");
+function splitPath(path2) {
+  const [_, ...s] = path2.split("/");
   return s[s.length - 1] === "" ? s.slice(0, -1) : s;
 }
 function getMatchParams(segments, paramsMap) {
@@ -12929,11 +12929,11 @@ function getMatchParams(segments, paramsMap) {
   }
   return params;
 }
-function addRoute(ctx, method = "", path4, data) {
+function addRoute(ctx, method = "", path2, data) {
   method = method.toUpperCase();
-  if (path4.charCodeAt(0) !== 47) path4 = `/${path4}`;
-  path4 = path4.replace(/\\:/g, "%3A");
-  const segments = splitPath(path4);
+  if (path2.charCodeAt(0) !== 47) path2 = `/${path2}`;
+  path2 = path2.replace(/\\:/g, "%3A");
+  const segments = splitPath(path2);
   let node = ctx.root;
   let _unnamedParamIndex = 0;
   const paramsMap = [];
@@ -12999,14 +12999,14 @@ function getParamRegexp(segment) {
   const regex = segment.replace(/:(\w+)/g, (_, id) => `(?<${id}>[^/]+)`).replace(/\./g, "\\.");
   return /* @__PURE__ */ new RegExp(`^${regex}$`);
 }
-function findRoute(ctx, method = "", path4, opts) {
-  if (path4.charCodeAt(path4.length - 1) === 47) path4 = path4.slice(0, -1);
-  const staticNode = ctx.static[path4];
+function findRoute(ctx, method = "", path2, opts) {
+  if (path2.charCodeAt(path2.length - 1) === 47) path2 = path2.slice(0, -1);
+  const staticNode = ctx.static[path2];
   if (staticNode && staticNode.methods) {
     const staticMatch = staticNode.methods[method] || staticNode.methods[""];
     if (staticMatch !== void 0) return staticMatch[0];
   }
-  const segments = splitPath(path4);
+  const segments = splitPath(path2);
   const match = _lookupTree(ctx, ctx.root, method, segments, 0)?.[0];
   if (match === void 0) return;
   if (opts?.params === false) return match;
@@ -13057,9 +13057,9 @@ function _lookupTree(ctx, node, method, segments, index) {
   }
   if (node.wildcard && node.wildcard.methods) return node.wildcard.methods[method] || node.wildcard.methods[""];
 }
-function findAllRoutes(ctx, method = "", path4, opts) {
-  if (path4.charCodeAt(path4.length - 1) === 47) path4 = path4.slice(0, -1);
-  const segments = splitPath(path4);
+function findAllRoutes(ctx, method = "", path2, opts) {
+  if (path2.charCodeAt(path2.length - 1) === 47) path2 = path2.slice(0, -1);
+  const segments = splitPath(path2);
   const matches = _findAll(ctx, ctx.root, method, segments, 0);
   if (opts?.params === false) return matches;
   return matches.map((m) => {
@@ -13132,25 +13132,25 @@ var init_router = __esm({
         const methods2 = Array.isArray(endpoint.options?.method) ? endpoint.options.method : [endpoint.options?.method];
         for (const method of methods2) addRoute(router2, method, endpoint.path, endpoint);
       }
-      if (config3?.routerMiddleware?.length) for (const { path: path4, middleware } of config3.routerMiddleware) addRoute(middlewareRouter, "*", path4, middleware);
+      if (config3?.routerMiddleware?.length) for (const { path: path2, middleware } of config3.routerMiddleware) addRoute(middlewareRouter, "*", path2, middleware);
       const processRequest = async (request) => {
         const url = new URL(request.url);
         const pathname = url.pathname;
-        const path4 = config3?.basePath && config3.basePath !== "/" ? pathname.split(config3.basePath).reduce((acc, curr, index) => {
+        const path2 = config3?.basePath && config3.basePath !== "/" ? pathname.split(config3.basePath).reduce((acc, curr, index) => {
           if (index !== 0) if (index > 1) acc.push(`${config3.basePath}${curr}`);
           else acc.push(curr);
           return acc;
         }, []).join("") : url.pathname;
-        if (!path4?.length) return new Response(null, {
+        if (!path2?.length) return new Response(null, {
           status: 404,
           statusText: "Not Found"
         });
-        if (/\/{2,}/.test(path4)) return new Response(null, {
+        if (/\/{2,}/.test(path2)) return new Response(null, {
           status: 404,
           statusText: "Not Found"
         });
-        const route = findRoute(router2, request.method, path4);
-        if (path4.endsWith("/") !== route?.data?.path?.endsWith("/") && !config3?.skipTrailingSlashes) return new Response(null, {
+        const route = findRoute(router2, request.method, path2);
+        if (path2.endsWith("/") !== route?.data?.path?.endsWith("/") && !config3?.skipTrailingSlashes) return new Response(null, {
           status: 404,
           statusText: "Not Found"
         });
@@ -13168,7 +13168,7 @@ var init_router = __esm({
         try {
           const allowedMediaTypes = handler.options.metadata?.allowedMediaTypes || config3?.allowedMediaTypes;
           const context = {
-            path: path4,
+            path: path2,
             method: request.method,
             headers: request.headers,
             params: route.params ? JSON.parse(JSON.stringify(route.params)) : {},
@@ -13179,7 +13179,7 @@ var init_router = __esm({
             asResponse: true,
             context: config3?.routerContext
           };
-          const middlewareRoutes = findAllRoutes(middlewareRouter, "*", path4);
+          const middlewareRoutes = findAllRoutes(middlewareRouter, "*", path2);
           if (middlewareRoutes?.length) for (const { data: middleware, params } of middlewareRoutes) {
             const res = await middleware({
               ...context,
@@ -14163,7 +14163,7 @@ function attachResponseHeadersToAPIError(responseHeaders, e) {
   });
 }
 function createAuthEndpoint(pathOrOptions, handlerOrOptions, handlerOrNever) {
-  const path4 = typeof pathOrOptions === "string" ? pathOrOptions : void 0;
+  const path2 = typeof pathOrOptions === "string" ? pathOrOptions : void 0;
   const options = typeof handlerOrOptions === "object" ? handlerOrOptions : pathOrOptions;
   const handler = typeof handlerOrOptions === "function" ? handlerOrOptions : handlerOrNever;
   const wrapped = async (ctx) => {
@@ -14175,7 +14175,7 @@ function createAuthEndpoint(pathOrOptions, handlerOrOptions, handlerOrNever) {
       throw e;
     }
   };
-  if (path4) return createEndpoint(path4, {
+  if (path2) return createEndpoint(path2, {
     ...options,
     use: [...options?.use || [], ...use]
   }, wrapped);
@@ -14462,8 +14462,8 @@ function normalizeIP(ip, options = {}) {
   if (ipv43) return ipv43.toLowerCase();
   return normalizeIPv6(ip, options.ipv6Subnet ?? 64);
 }
-function createRateLimitKey(ip, path4) {
-  return `${ip}|${path4}`;
+function createRateLimitKey(ip, path2) {
+  return `${ip}|${path2}`;
 }
 var init_ip = __esm({
   "../../node_modules/@better-auth/core/dist/utils/ip.mjs"() {
@@ -14694,8 +14694,8 @@ function createDatabaseStorageWrapper(ctx) {
 }
 function getRateLimitStorage(ctx, rateLimitSettings) {
   if (ctx.options.rateLimit?.customStorage) return ctx.options.rateLimit.customStorage;
-  const storage2 = ctx.rateLimit.storage;
-  if (storage2 === "secondary-storage") {
+  const storage = ctx.rateLimit.storage;
+  if (storage === "secondary-storage") {
     const ttlFor = (window2) => window2 ?? ctx.options.rateLimit?.window ?? 10;
     return {
       get: async (key) => {
@@ -14716,7 +14716,7 @@ function getRateLimitStorage(ctx, rateLimitSettings) {
         };
       } : void 0
     };
-  } else if (storage2 === "memory") {
+  } else if (storage === "memory") {
     const ttlFor = (window2) => window2 ?? ctx.options.rateLimit?.window ?? 10;
     return {
       async get(key) {
@@ -14758,7 +14758,7 @@ function getRateLimitStorage(ctx, rateLimitSettings) {
 }
 async function resolveRateLimitConfig(req, ctx) {
   const basePath = new URL(ctx.baseURL).pathname;
-  const path4 = normalizePathname(req.url, basePath);
+  const path2 = normalizePathname(req.url, basePath);
   let currentWindow = ctx.rateLimit.window;
   let currentMax = ctx.rateLimit.max;
   const ip = getIp(req, ctx.options);
@@ -14767,14 +14767,14 @@ async function resolveRateLimitConfig(req, ctx) {
     ctx.logger.warn("Rate limiting could not determine a client IP and is falling back to a single shared per-path bucket. Ensure your runtime forwards a trusted client IP header and configure `advanced.ipAddress.ipAddressHeaders` if needed.");
     ipWarningLogged = true;
   }
-  const key = createRateLimitKey(ip ?? NO_TRUSTED_IP_KEY, path4);
-  const specialRule = getDefaultSpecialRules().find((rule) => rule.pathMatcher(path4));
+  const key = createRateLimitKey(ip ?? NO_TRUSTED_IP_KEY, path2);
+  const specialRule = getDefaultSpecialRules().find((rule) => rule.pathMatcher(path2));
   if (specialRule) {
     currentWindow = specialRule.window;
     currentMax = specialRule.max;
   }
   for (const plugin of ctx.options.plugins || []) if (plugin.rateLimit) {
-    const matchedRule = plugin.rateLimit.find((rule) => rule.pathMatcher(path4));
+    const matchedRule = plugin.rateLimit.find((rule) => rule.pathMatcher(path2));
     if (matchedRule) {
       currentWindow = matchedRule.window;
       currentMax = matchedRule.max;
@@ -14783,8 +14783,8 @@ async function resolveRateLimitConfig(req, ctx) {
   }
   if (ctx.rateLimit.customRules) {
     const _path = Object.keys(ctx.rateLimit.customRules).find((p) => {
-      if (p.includes("*")) return wildcardMatch(p)(path4);
-      return p === path4;
+      if (p.includes("*")) return wildcardMatch(p)(path2);
+      return p === path2;
     });
     if (_path) {
       const customRule = ctx.rateLimit.customRules[_path];
@@ -14810,40 +14810,40 @@ async function onRequestRateLimit(req, ctx) {
   const config3 = await resolveRateLimitConfig(req, ctx);
   if (!config3) return;
   const { key, currentWindow, currentMax } = config3;
-  const storage2 = getRateLimitStorage(ctx, { window: currentWindow });
+  const storage = getRateLimitStorage(ctx, { window: currentWindow });
   const rule = {
     window: currentWindow,
     max: currentMax
   };
-  if (storage2.consume) {
-    const { allowed: allowed2, retryAfter } = await storage2.consume(key, rule);
+  if (storage.consume) {
+    const { allowed: allowed2, retryAfter } = await storage.consume(key, rule);
     if (!allowed2) return rateLimitResponse(retryAfter ?? currentWindow);
     return;
   }
-  return legacyConsume(ctx, storage2, key, rule);
+  return legacyConsume(ctx, storage, key, rule);
 }
-async function legacyConsume(ctx, storage2, key, rule) {
+async function legacyConsume(ctx, storage, key, rule) {
   if (!legacyFallbackWarningLogged) {
     ctx.logger.warn("Rate limiting is best-effort: the configured storage has no atomic `consume`, so concurrent requests may bypass the limit. Provide a storage that implements `consume` for strict enforcement.");
     legacyFallbackWarningLogged = true;
   }
-  const decision = decideConsume(await storage2.get(key), rule, Date.now());
+  const decision = decideConsume(await storage.get(key), rule, Date.now());
   if (!decision.allowed) return rateLimitResponse(decision.retryAfter ?? rule.window);
-  await storage2.set(key, {
+  await storage.set(key, {
     ...decision.next,
     key
   }, decision.update);
 }
 function getDefaultSpecialRules() {
   return [{
-    pathMatcher(path4) {
-      return path4.startsWith("/sign-in") || path4.startsWith("/sign-up") || path4.startsWith("/change-password") || path4.startsWith("/change-email");
+    pathMatcher(path2) {
+      return path2.startsWith("/sign-in") || path2.startsWith("/sign-up") || path2.startsWith("/change-password") || path2.startsWith("/change-email");
     },
     window: 10,
     max: 3
   }, {
-    pathMatcher(path4) {
-      return path4 === "/request-password-reset" || path4 === "/send-verification-email" || path4.startsWith("/forget-password") || path4 === "/email-otp/send-verification-otp" || path4 === "/email-otp/request-password-reset";
+    pathMatcher(path2) {
+      return path2 === "/request-password-reset" || path2 === "/send-verification-email" || path2.startsWith("/forget-password") || path2 === "/email-otp/send-verification-otp" || path2 === "/email-otp/request-password-reset";
     },
     window: 60,
     max: 3
@@ -17736,7 +17736,7 @@ function getURL2(url, option) {
     }
   }
   if (!basePath.endsWith("/")) basePath += "/";
-  let [path4, urlQuery] = url.replace(basePath, "").split("?");
+  let [path2, urlQuery] = url.replace(basePath, "").split("?");
   const queryParams = new URLSearchParams(urlQuery);
   for (const [key, value] of Object.entries(query || {})) {
     if (value == null) continue;
@@ -17756,7 +17756,7 @@ function getURL2(url, option) {
   const pathParams = /* @__PURE__ */ new Map();
   if (params) {
     if (Array.isArray(params)) {
-      const paramPaths = path4.split("/").filter((p) => p.startsWith(":"));
+      const paramPaths = path2.split("/").filter((p) => p.startsWith(":"));
       for (const [index, key] of paramPaths.entries()) {
         const value = params[index];
         pathParams.set(key, String(value));
@@ -17767,14 +17767,14 @@ function getURL2(url, option) {
       }
     }
   }
-  path4 = path4.split("/").map((segment) => encodePathSegment(segment, pathParams)).join("/");
-  path4 = path4.replace(/^\/+/, "");
+  path2 = path2.split("/").map((segment) => encodePathSegment(segment, pathParams)).join("/");
+  path2 = path2.replace(/^\/+/, "");
   let queryParamString = queryParams.toString();
   queryParamString = queryParamString.length > 0 ? `?${queryParamString}`.replace(/\+/g, "%20") : "";
   if (!basePath.startsWith("http")) {
-    return `${basePath}${path4}${queryParamString}`;
+    return `${basePath}${path2}${queryParamString}`;
   }
-  const _url2 = new URL(`${path4}${queryParamString}`, basePath);
+  const _url2 = new URL(`${path2}${queryParamString}`, basePath);
   return _url2;
 }
 var __defProp2, __defProps, __getOwnPropDescs, __getOwnPropSymbols, __hasOwnProp2, __propIsEnum, __defNormalProp, __spreadValues, __spreadProps, BetterFetchError, initializePlugins, LinearRetryStrategy, ExponentialRetryStrategy, getAuthHeader, JSON_RE, ValidationError2, methods, isReservedPathSegment, betterFetch;
@@ -24173,15 +24173,15 @@ function checkEndpointConflicts(options, logger2) {
   options.plugins?.forEach((plugin) => {
     if (plugin.endpoints) {
       for (const [key, endpoint] of Object.entries(plugin.endpoints)) if (endpoint && "path" in endpoint && typeof endpoint.path === "string") {
-        const path4 = endpoint.path;
+        const path2 = endpoint.path;
         let methods2 = [];
         if (endpoint.options && "method" in endpoint.options) {
           if (Array.isArray(endpoint.options.method)) methods2 = endpoint.options.method;
           else if (typeof endpoint.options.method === "string") methods2 = [endpoint.options.method];
         }
         if (methods2.length === 0) methods2 = ["*"];
-        if (!endpointRegistry.has(path4)) endpointRegistry.set(path4, []);
-        endpointRegistry.get(path4).push({
+        if (!endpointRegistry.has(path2)) endpointRegistry.set(path2, []);
+        endpointRegistry.get(path2).push({
           pluginId: plugin.id,
           endpointKey: key,
           methods: methods2
@@ -24190,7 +24190,7 @@ function checkEndpointConflicts(options, logger2) {
     }
   });
   const conflicts = [];
-  for (const [path4, entries] of endpointRegistry.entries()) if (entries.length > 1) {
+  for (const [path2, entries] of endpointRegistry.entries()) if (entries.length > 1) {
     const methodMap = /* @__PURE__ */ new Map();
     let hasConflict = false;
     for (const entry of entries) for (const method of entry.methods) {
@@ -24205,7 +24205,7 @@ function checkEndpointConflicts(options, logger2) {
       const conflictingMethods = [];
       for (const [method, plugins] of methodMap.entries()) if (plugins.length > 1 || method === "*" && entries.length > 1 || method !== "*" && methodMap.has("*")) conflictingMethods.push(method);
       conflicts.push({
-        path: path4,
+        path: path2,
         plugins: uniquePlugins,
         conflictingMethods
       });
@@ -47881,9 +47881,7 @@ __export(index_exports, {
 module.exports = __toCommonJS(index_exports);
 var import_express7 = __toESM(require("express"));
 var import_cors = __toESM(require("cors"));
-var import_dotenv3 = __toESM(require("dotenv"));
-var import_path2 = __toESM(require("path"));
-var import_fs2 = __toESM(require("fs"));
+var import_dotenv4 = __toESM(require("dotenv"));
 
 // ../../node_modules/set-cookie-parser/lib/set-cookie.js
 var defaultParseOptions = {
@@ -48339,33 +48337,27 @@ function requireAdmin(req, res, next) {
 
 // src/routers/product.router.ts
 var import_multer = __toESM(require("multer"));
-var import_path = __toESM(require("path"));
-var import_fs = __toESM(require("fs"));
-var productRouter = (0, import_express.Router)();
-var isVercel = process.env.VERCEL === "1";
-var storage = import_multer.default.diskStorage({
-  destination: (req, file, cb) => {
-    const uploadsDir2 = isVercel ? "/tmp/uploads" : import_path.default.join(__dirname, "../../uploads");
-    if (!import_fs.default.existsSync(uploadsDir2)) {
-      import_fs.default.mkdirSync(uploadsDir2, { recursive: true });
-    }
-    cb(null, uploadsDir2);
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    const ext = import_path.default.extname(file.originalname);
-    cb(null, `${file.fieldname}-${uniqueSuffix}${ext}`);
-  }
+
+// src/config/cloudinary.ts
+var import_cloudinary = require("cloudinary");
+var import_dotenv3 = __toESM(require("dotenv"));
+import_dotenv3.default.config();
+import_cloudinary.v2.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
 });
+
+// src/routers/product.router.ts
+var productRouter = (0, import_express.Router)();
 var upload = (0, import_multer.default)({
-  storage,
+  storage: import_multer.default.memoryStorage(),
   limits: { fileSize: 5 * 1024 * 1024 },
   // 5MB limit
   fileFilter: (req, file, cb) => {
     const allowedTypes = /jpeg|jpg|png|webp|gif/;
     const mimeType = allowedTypes.test(file.mimetype);
-    const extName = allowedTypes.test(import_path.default.extname(file.originalname).toLowerCase());
-    if (mimeType && extName) {
+    if (mimeType) {
       return cb(null, true);
     }
     cb(new Error("Only images are allowed (jpeg, jpg, png, webp, gif)"));
@@ -48404,9 +48396,29 @@ productRouter.post(
       if (!req.file) {
         return res.status(400).json({ error: "No file uploaded" });
       }
-      const fileUrl = `/api/uploads/${req.file.filename}`;
-      res.json({ imageUrl: fileUrl });
+      const result = await new Promise((resolve, reject) => {
+        const uploadStream = import_cloudinary.v2.uploader.upload_stream(
+          {
+            folder: "kemplang-aleng/products",
+            resource_type: "image",
+            transformation: [
+              { quality: "auto", fetch_format: "auto" }
+              // Auto-optimize for best format & quality
+            ]
+          },
+          (error3, result2) => {
+            if (error3) reject(error3);
+            else resolve(result2);
+          }
+        );
+        uploadStream.end(req.file.buffer);
+      });
+      res.json({
+        imageUrl: result.secure_url,
+        publicId: result.public_id
+      });
     } catch (error3) {
+      console.error("Cloudinary upload error:", error3);
       next(error3);
     }
   }
@@ -49127,7 +49139,7 @@ init_db();
 init_auth();
 init_schema();
 var import_drizzle_orm8 = require("drizzle-orm");
-import_dotenv3.default.config();
+import_dotenv4.default.config();
 var app = (0, import_express7.default)();
 var PORT = process.env.PORT || 5e3;
 app.use(
@@ -49138,16 +49150,6 @@ app.use(
 );
 app.use(import_express7.default.json());
 app.use(import_express7.default.urlencoded({ extended: true }));
-var isVercel2 = process.env.VERCEL === "1";
-var uploadsDir = isVercel2 ? "/tmp/uploads" : import_path2.default.join(__dirname, "../uploads");
-try {
-  if (!import_fs2.default.existsSync(uploadsDir)) {
-    import_fs2.default.mkdirSync(uploadsDir, { recursive: true });
-  }
-} catch (err) {
-  console.warn("Warning: Could not create uploads directory:", err);
-}
-app.use("/api/uploads", import_express7.default.static(uploadsDir));
 app.use((req, res, next) => {
   console.log(`[${(/* @__PURE__ */ new Date()).toISOString()}] ${req.method} ${req.path}`);
   next();
